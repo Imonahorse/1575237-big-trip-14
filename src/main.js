@@ -6,7 +6,7 @@ import {createEventsListTemplate} from './view/events-list.js';
 import {createEditEventTemplate} from './view/edit-event.js';
 import {createEventTemplate} from './view/event.js';
 import {createNewEventTemplate} from './view/new-event.js';
-import {createEvent} from './mock/event.js';
+import {createEvent} from './mock/event-data.js';
 import {generateFilter} from './filter.js';
 
 const tripMain = document.querySelector('.trip-main');
@@ -42,6 +42,6 @@ const renderNewPoint = () => render(containerForPoints, createNewEventTemplate(e
 renderNewPoint();
 renderEditPoint();
 
-for (let i = 1; i < POINTS_COUNT; i++) {
+for (let i = 0; i < POINTS_COUNT; i++) {
   render(containerForPoints, createEventTemplate(events[i]), 'beforeend');
 }
