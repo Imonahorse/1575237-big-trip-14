@@ -1,27 +1,48 @@
+import {createElement} from '../utils.js';
+
 const createFiltersItemTemplate = (filter) => {
   const {name, count} = filter;
 
   return `<div class="trip-filters__filter">
                   <input id="filter-${name}"
                   class="trip-filters__filter-input  visually-hidden"
-                   type="radio" name="trip-filter"
+                   type="radio"
+                   name="trip-filter"
                    value="${name}">
                   <label class="trip-filters__filter-label" for="filter-${name}">${name} ${count}</label>
                 </div>`;
 };
 
 const createFiltersTemplate = (filterItems) => {
-  const filterItemsTemplate = filterItems
-    .map((item) => createFiltersItemTemplate(item))
-    .join('');
+  const filterItemsTemplate = filterItems.map((item) => createFiltersItemTemplate(item)).join('');
 
-  return `<div class="trip-controls__filters">
-              <h2 class="visually-hidden">Filter events</h2>
-              <form class="trip-filters" action="#" method="get">
+  return `<form class="trip-filters" action="#" method="get">
                     ${filterItemsTemplate}
                 <button class="visually-hidden" type="submit">Accept filter</button>
-              </form>
-            </div>`;
+              </form>`;
 };
 
-export {createFiltersTemplate};
+class Filters {
+  constructor(filters) {
+    this._filters = filters;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFiltersTemplate(this._filters);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export default Filters;

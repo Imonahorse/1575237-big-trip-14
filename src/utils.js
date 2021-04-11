@@ -1,5 +1,10 @@
 import dayjs from 'dayjs';
 
+const RenderPosition = {
+  AFTERBEGIN: 'afterbegin',
+  BEFOREEND: 'beforeend',
+};
+
 const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
@@ -7,7 +12,7 @@ const getRandomInteger = (a = 0, b = 1) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 const getArrayRandomElement = (array) => array[getRandomInteger(0, array.length - 1)];
-const getRandomArray = (array)  => {
+const getRandomArray = (array) => {
   return array.filter(() => Math.random() > 0.5);
 };
 const generateDate = () => {
@@ -42,6 +47,22 @@ const isEventComing = (event) => {
 const isEventExpired = (event) => {
   return dayjs().isBefore(event, 'D');
 };
+const render = (container, element, place) => {
+  switch (place) {
+    case RenderPosition.AFTERBEGIN:
+      container.prepend(element);
+      break;
+    case RenderPosition.BEFOREEND:
+      container.append(element);
+      break;
+  }
+};
+const createElement = (template) => {
+  const newElement = document.createElement('div');
+  newElement.innerHTML = template;
+
+  return newElement.firstChild;
+};
 
 export {
   getArrayRandomElement,
@@ -53,5 +74,8 @@ export {
   humanizeTimeFormat,
   humanizeDateFormat,
   isEventComing,
-  isEventExpired
+  isEventExpired,
+  render,
+  createElement,
+  RenderPosition
 };

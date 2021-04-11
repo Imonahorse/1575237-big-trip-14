@@ -17,7 +17,12 @@ const TYPES = ['Check-in',
   'Transport',
   'Drive',
   'Flight'];
-const CITIES = ['London', 'Paris', 'Moscow', 'Amsterdam', 'Warsaw', 'New-Vasiuky'];
+const CITIES = ['London',
+  'Paris',
+  'Moscow',
+  'Amsterdam',
+  'Warsaw',
+  'New-Vasiuky'];
 const DESCRIPTIONS = [
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet constius magna, non porta ligula feugiat eget.',
   'Fusce tristique felis at fermentum pharetra.',
@@ -51,7 +56,7 @@ const OFFERS = [
     price: 40,
   },
 ];
-const PHOTOS = {
+const PICTURE = {
   src: `http://picsum.photos/248/152?r=${getRandomInteger(0, 9)}`,
   alt: getArrayRandomElement(DESCRIPTIONS),
 };
@@ -61,8 +66,8 @@ const Price = {
   MAX: 1000,
 };
 
-const createRandomPhotosArray = () => {
-  return new Array(getRandomInteger(PHOTOS_MAX_LENGTH)).fill().map(() => PHOTOS);
+const createRandomPicturesArray = () => {
+  return new Array(getRandomInteger(PHOTOS_MAX_LENGTH)).fill().map(() => PICTURE);
 };
 const msToTime = (duration) => {
   const minutes = Math.floor((duration / (1000 * 60)) % 60);
@@ -86,18 +91,18 @@ const createEvent = () => {
 
   return {
     event: {
-      base_prise: getRandomInteger(Price.MIN, Price.MAX),
+      basePrise: getRandomInteger(Price.MIN, Price.MAX),
       date: generateDate(),
-      date_from: dateFrom,
-      date_to: dateTo,
+      dateFrom,
+      dateTo,
       duration,
       id: '0',
-      is_favorite: Boolean(getRandomInteger(0, 1)),
+      isFavorite: Boolean(getRandomInteger(0, 1)),
     },
     destination: {
       name: getArrayRandomElement(CITIES),
       description: getRandomArray(DESCRIPTIONS),
-      picture: createRandomPhotosArray(),
+      picture: createRandomPicturesArray(),
     },
     offer: {
       type: getArrayRandomElement(TYPES),

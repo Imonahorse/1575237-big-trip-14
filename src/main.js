@@ -1,13 +1,14 @@
-import {createNavigationTemplate} from './view/navigation.js';
-import {createRouteInfoTemplate} from './view/route-info.js';
-import {createFiltersTemplate} from './view/filters.js';
-import {createSortingEventsTemplate} from './view/sorting-events.js';
-import {createEventsListTemplate} from './view/events-list.js';
-import {createEditEventTemplate} from './view/edit-event.js';
-import {createEventTemplate} from './view/event.js';
-import {createNewEventTemplate} from './view/new-event.js';
+import SiteMenuView from './view/site-menu.js';
+import RouteInfoView from './view/route-info.js';
+import FiltersView from './view/filters.js';
+import SortingView from './view/sorting-events.js';
+import EventsListView from './view/events-list.js';
+import EditEventView from './view/edit-event.js';
+import EventView from './view/event.js';
+import NewEventView from './view/new-event.js';
 import {createEvent} from './mock/event-data.js';
 import {generateFilter} from './filter.js';
+import {render, RenderPosition} from './utils.js';
 
 const tripMain = document.querySelector('.trip-main');
 const tripControlsNavigation = tripMain.querySelector('.trip-controls__navigation');
@@ -18,15 +19,35 @@ const POINTS_COUNT = 15;
 const events = new Array(POINTS_COUNT).fill().map(createEvent);
 const filters = generateFilter(events);
 
-const render = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
+const renderEvent = (eventListElement, event) => {
+  const eventComponent = new EventView(event);
+  const eventEditComponent = new EditEventView(event);
+
+  const replaceCardToForm = () => {
+    eventListElement.replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
+  };
+
+  const replaceFormToCard = () => {
+    eventListElement.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
+  };
+
+  eventComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+    replaceCardToForm();
+  });
+
+  eventEditComponent.getElement().querySelector('form').addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    replaceFormToCard();
+  });
+
+  render(eventListElement, eventComponent.getElement(), RenderPosition.BEFOREEND);
 };
 
-const renderMenu = () => render(tripControlsNavigation, createNavigationTemplate(), 'beforeend');
-const renderRouteInfo = () => render(tripMain, createRouteInfoTemplate(), 'afterbegin');
-const renderFilters = () => render(tripControlsFilters, createFiltersTemplate(filters), 'afterbegin');
-const renderSortingEvents = () => render(tripEvents, createSortingEventsTemplate(), 'afterbegin');
-const renderEventsList = () => render(tripEvents, createEventsListTemplate(), 'beforeend');
+const renderMenu = () => render(tripControlsNavigation, new SiteMenuView().getElement(), RenderPosition.BEFOREEND);
+const renderRouteInfo = () => render(tripMain, new RouteInfoView().getElement(), RenderPosition.AFTERBEGIN);
+const renderFilters = () => render(tripControlsFilters, new FiltersView(filters).getElement(), RenderPosition.BEFOREEND);
+const renderSortingEvents = () => render(tripEvents, new SortingView().getElement(), RenderPosition.AFTERBEGIN);
+const renderEventsList = () => render(tripEvents, new EventsListView().getElement(), RenderPosition.BEFOREEND);
 
 renderMenu();
 renderRouteInfo();
@@ -34,14 +55,14 @@ renderFilters();
 renderSortingEvents();
 renderEventsList();
 
-const containerForPoints = document.querySelector('.trip-events__list');
+const containerForEvents = document.querySelector('.trip-events__list');
 
-const renderEditPoint = () => render(containerForPoints, createEditEventTemplate(events[1]), 'beforeend');
-const renderNewPoint = () => render(containerForPoints, createNewEventTemplate(events[0]), 'beforeend');
+const renderEditPoint = () => render(containerForEvents, new EditEventView(events[1]).getElement(), RenderPosition.BEFOREEND);
+const renderNewPoint = () => render(containerForEvents, new NewEventView(events[0]).getElement(), RenderPosition.BEFOREEND);
 
 renderNewPoint();
 renderEditPoint();
 
-for (let i = 0; i < POINTS_COUNT; i++) {
-  render(containerForPoints, createEventTemplate(events[i]), 'beforeend');
+for (let i = 2; i < POINTS_COUNT; i++) {
+  renderEvent(containerForEvents, events[i]);
 }

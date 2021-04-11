@@ -1,3 +1,5 @@
+import {createElement} from '../utils.js';
+
 const createEditEventTemplate = () => {
   return `<li class="trip-events__item">
               <form class="event event--edit" action="#" method="post">
@@ -140,4 +142,26 @@ const createEditEventTemplate = () => {
             </li>`;
 };
 
-export {createEditEventTemplate};
+class EditEvent {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createEditEventTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export default EditEvent;
