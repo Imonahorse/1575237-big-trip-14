@@ -1,6 +1,6 @@
-import {humanizeTimeFormat, humanizeDateFormat, createElement} from '../utils.js';
+import {humanizeTimeFormat, humanizeDateFormat, createElement, calcPrice} from '../utils.js';
 
-const createOfferTemplate = (offers) => {
+const createOffersTemplate = (offers) => {
   return offers.map((item) => {
     return `<li class="event__offer">
         <span class="event__offer-title">${item.title}</span>
@@ -12,14 +12,8 @@ const createOfferTemplate = (offers) => {
 const addToFavourites = (boolean) => {
   return (boolean) ? 'event__favorite-btn event__favorite-btn--active' : 'event__favorite-btn';
 };
-const calcPrice = (offers) => {
-  let price = 0;
-  offers.forEach((item) => price += item.price);
-  return price;
-};
 
-const createEventTemplate = (events) => {
-  const {event, destination, offer} = events;
+const createEventTemplate = ({event, destination, offer}) => {
   const {name} = destination;
   const {type, offers} = offer;
   const {date, dateFrom, dateTo, duration, id, isFavorite} = event;
@@ -48,7 +42,7 @@ const createEventTemplate = (events) => {
                 </p>
                 <h4 class="visually-hidden">Offers:</h4>
                 <ul class="event__selected-offers">
-                    ${createOfferTemplate(offers)}
+                    ${createOffersTemplate(offers)}
                 </ul>
                 <button class="${addToFavourites(isFavorite)}" type="button">
                   <span class="visually-hidden">Add to favorite</span>

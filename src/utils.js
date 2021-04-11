@@ -38,8 +38,11 @@ const generateDateTo = (dateFrom) => {
 const humanizeTimeFormat = (time) => {
   return dayjs(time).format('HH:mm');
 };
-const humanizeDateFormat = (data) => {
-  return dayjs(data).format('D MMMM');
+const humanizeDateFormat = (date) => {
+  return dayjs(date).format('D MMMM');
+};
+const humanizeEditEventDateFormat = (date) => {
+  return dayjs(date).format('DD/MM/YY');
 };
 const isEventComing = (event) => {
   return dayjs().isAfter(event, 'D');
@@ -63,6 +66,11 @@ const createElement = (template) => {
 
   return newElement.firstChild;
 };
+const calcPrice = (offers) => {
+  let price = 0;
+  offers.forEach((item) => price += item.price);
+  return price;
+};
 
 export {
   getArrayRandomElement,
@@ -77,5 +85,7 @@ export {
   isEventExpired,
   render,
   createElement,
+  humanizeEditEventDateFormat,
+  calcPrice,
   RenderPosition
 };

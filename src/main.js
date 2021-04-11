@@ -57,11 +57,11 @@ renderEventsList();
 
 const containerForEvents = document.querySelector('.trip-events__list');
 
-const renderEditPoint = () => render(containerForEvents, new EditEventView(events[1]).getElement(), RenderPosition.BEFOREEND);
+// const renderEditPoint = () => render(containerForEvents, new EditEventView(events[1]).getElement(), RenderPosition.BEFOREEND);
 const renderNewPoint = () => render(containerForEvents, new NewEventView(events[0]).getElement(), RenderPosition.BEFOREEND);
 
 renderNewPoint();
-renderEditPoint();
+// renderEditPoint();
 
 for (let i = 2; i < POINTS_COUNT; i++) {
   renderEvent(containerForEvents, events[i]);
