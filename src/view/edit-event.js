@@ -145,6 +145,6 @@ class EditEvent {
   removeElement() {
     this._element = null;
   }
-};
+}
 
 export default EditEvent;
