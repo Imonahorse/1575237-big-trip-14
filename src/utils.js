@@ -71,6 +71,7 @@ const calcPrice = (offers) => {
   offers.forEach((item) => price += item.price);
   return price;
 };
+const isEscEvent = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
 
 export {
   getArrayRandomElement,
@@ -87,5 +88,6 @@ export {
   createElement,
   humanizeEditEventDateFormat,
   calcPrice,
-  RenderPosition
+  RenderPosition,
+  isEscEvent
 };
