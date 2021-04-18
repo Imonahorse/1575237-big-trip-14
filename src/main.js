@@ -9,7 +9,8 @@ import NewEventView from './view/new-event.js';
 import NoEventView from './view/no-event.js';
 import {createEvent} from './mock/event-data.js';
 import {generateFilter} from './filter.js';
-import {render, RenderPosition, isEscEvent} from './utils.js';
+import {render, replace, RenderPosition} from './utils/render.js';
+import {isEscEvent} from './utils/common.js';
 
 const tripMain = document.querySelector('.trip-main');
 const tripControlsNavigation = tripMain.querySelector('.trip-controls__navigation');
@@ -26,18 +27,15 @@ const renderEvent = (eventListElement, event) => {
   const eventEditComponent = new EditEventView(event);
 
   const replaceCardToForm = () => {
-    eventListElement.replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
+    replace(eventEditComponent, eventComponent);
   };
-
   const replaceFormToCard = () => {
-    eventListElement.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
+    replace(eventComponent, eventEditComponent);
   };
-
   const closeEventEditForm = () => {
     replaceFormToCard();
     document.removeEventListener('keydown', onEscKeydown);
   };
-
   const onEscKeydown = (evt) => {
     if (isEscEvent) {
       evt.preventDefault();
@@ -45,27 +43,24 @@ const renderEvent = (eventListElement, event) => {
     }
   };
 
-  eventComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+  eventComponent.setEditClickHandler(() => {
     replaceCardToForm();
     document.addEventListener('keydown', onEscKeydown);
   });
-
-  eventEditComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+  eventEditComponent.setEditClickHandler(() => {
     closeEventEditForm();
   });
-
-  eventEditComponent.getElement().querySelector('form').addEventListener('submit', (evt) => {
-    evt.preventDefault();
+  eventEditComponent.setFormSubmitHandler(() => {
     closeEventEditForm();
   });
 
   render(eventListElement, eventComponent.getElement(), RenderPosition.BEFOREEND);
 };
 
-const renderMenu = () => render(tripControlsNavigation, new SiteMenuView().getElement(), RenderPosition.BEFOREEND);
-const renderRouteInfo = () => render(tripMain, new RouteInfoView().getElement(), RenderPosition.AFTERBEGIN);
-const renderFilters = () => render(tripControlsFilters, new FiltersView(filters).getElement(), RenderPosition.BEFOREEND);
-const renderEventsList = () => render(tripEvents, new EventsListView().getElement(), RenderPosition.BEFOREEND);
+const renderMenu = () => render(tripControlsNavigation, new SiteMenuView(), RenderPosition.BEFOREEND);
+const renderRouteInfo = () => render(tripMain, new RouteInfoView(), RenderPosition.AFTERBEGIN);
+const renderFilters = () => render(tripControlsFilters, new FiltersView(filters), RenderPosition.BEFOREEND);
+const renderEventsList = () => render(tripEvents, new EventsListView(), RenderPosition.BEFOREEND);
 
 renderMenu();
 renderRouteInfo();
@@ -75,11 +70,11 @@ renderEventsList();
 const containerForEvents = document.querySelector('.trip-events__list');
 
 if (events.length === EMPTY_EVENTS_LIST) {
-  render(containerForEvents, new NoEventView().getElement(), RenderPosition.AFTERBEGIN);
+  render(containerForEvents, new NoEventView(), RenderPosition.AFTERBEGIN);
 }
 
 if (events.length > EMPTY_EVENTS_LIST) {
-  render(tripEvents, new SortingView().getElement(), RenderPosition.AFTERBEGIN);
+  render(tripEvents, new SortingView(), RenderPosition.AFTERBEGIN);
   const renderNewPoint = () => render(containerForEvents, new NewEventView(events[0]).getElement(), RenderPosition.BEFOREEND);
   renderNewPoint();
 }

@@ -1,11 +1,13 @@
 import {
-  getArrayRandomElement,
-  getRandomArray,
   generateDate,
   generateDateFrom,
-  generateDateTo,
+  generateDateTo
+} from '../utils/event.js';
+import {
+  getArrayRandomElement,
+  getRandomArray,
   getRandomInteger
-} from '../utils.js';
+} from '../utils/common.js';
 
 const TYPES = ['Check-in',
   'Sightseeing',

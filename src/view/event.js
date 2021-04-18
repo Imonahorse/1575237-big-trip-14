@@ -1,4 +1,5 @@
-import {humanizeTimeFormat, humanizeDateFormat, createElement, calcPrice} from '../utils.js';
+import {humanizeTimeFormat, humanizeDateFormat, calcPrice} from '../utils/event.js';
+import AbstractView from './abstract.js';
 
 const createOffersTemplate = (offers) => {
   return offers.map((item) => {
@@ -58,26 +59,25 @@ const createEventTemplate = ({event, destination, offer}) => {
             </li>`;
 };
 
-class Event {
+class Event extends AbstractView {
   constructor(events) {
+    super();
     this._events = events;
-    this._element = null;
+    this._editClickHandler = this._editClickHandler.bind(this);
   }
 
   getTemplate() {
     return createEventTemplate(this._events);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _editClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.editClick();
   }
 
-  removeElement() {
-    this._element = null;
+  setEditClickHandler(callback) {
+    this._callback.editClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._editClickHandler);
   }
 }
 
