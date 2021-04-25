@@ -6,7 +6,6 @@ import {createEvent} from './mock/event-data.js';
 import {generateFilter} from './filter.js';
 import {render, RenderPosition} from './utils/render.js';
 
-
 const tripMain = document.querySelector('.trip-main');
 const tripControlsNavigation = tripMain.querySelector('.trip-controls__navigation');
 const tripControlsFilters = tripMain.querySelector('.trip-controls__filters');
@@ -20,7 +19,6 @@ const boardPresenter = new BoardPresenter(tripEventsSection);
 const renderMenu = () => render(tripControlsNavigation, new SiteMenuView(), RenderPosition.BEFOREEND);
 const renderRouteInfo = () => render(tripMain, new RouteInfoView(), RenderPosition.AFTERBEGIN);
 const renderFilters = () => render(tripControlsFilters, new FiltersView(filters), RenderPosition.BEFOREEND);
-
 
 renderMenu();
 renderRouteInfo();

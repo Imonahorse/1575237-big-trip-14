@@ -8,6 +8,7 @@ import {
   getRandomArray,
   getRandomInteger
 } from '../utils/common.js';
+import {nanoid} from 'nanoid';
 
 const TYPES = ['Check-in',
   'Sightseeing',
@@ -98,7 +99,7 @@ const createEvent = () => {
       dateFrom,
       dateTo,
       duration,
-      id: '0',
+      id: nanoid(),
       isFavorite: Boolean(getRandomInteger(0, 1)),
     },
     destination: {
