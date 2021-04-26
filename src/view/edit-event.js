@@ -14,10 +14,9 @@ const createOffersTemplate = (offers) => {
   }).join('');
 };
 
-const createEditEventTemplate = ({event, destination, offer}) => {
+const createEditEventTemplate = (event) => {
+  const {type, date, dateFrom, dateTo, id, destination, offers} = event;
   const {name, description} = destination;
-  const {type, offers} = offer;
-  const {date, dateFrom, dateTo, id} = event;
 
   const timeStart = humanizeTimeFormat(dateFrom);
   const timeEnd = humanizeTimeFormat(dateTo);
@@ -139,12 +138,12 @@ class EditEvent extends AbstractView {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit();
+    this._callback.formSubmit(this._event);
   }
 
   _editClickHandler(evt) {
     evt.preventDefault();
-    this._callback.editClick();
+    this._callback.editClick(this._event);
   }
 
   setFormSubmitHandler(callback) {
