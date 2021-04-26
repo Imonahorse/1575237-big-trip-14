@@ -41,6 +41,39 @@ const calcPrice = (offers) => {
   offers.forEach((item) => price += item.price);
   return price;
 };
+const getWeightForNullDate = (dateA, dateB) => {
+  if (dateA === null && dateB === null) {
+    return 0;
+  }
+
+  if (dateA === null) {
+    return 1;
+  }
+
+  if (dateB === null) {
+    return -1;
+  }
+
+  return null;
+};
+const sortEventUp = (taskA, taskB) => {
+  const weight = getWeightForNullDate(taskA.date, taskB.date);
+
+  if (weight !== null) {
+    return weight;
+  }
+
+  return dayjs(taskA.date).diff(dayjs(taskB.date));
+};
+const sortEventDown = (taskA, taskB) => {
+  const weight = getWeightForNullDate(taskA.date, taskB.date);
+
+  if (weight !== null) {
+    return weight;
+  }
+
+  return dayjs(taskB.date).diff(dayjs(taskA.date));
+};
 
 export {
   generateDate,
@@ -51,5 +84,8 @@ export {
   isEventComing,
   isEventExpired,
   humanizeEditEventDateFormat,
-  calcPrice
+  calcPrice,
+  getWeightForNullDate,
+  sortEventUp,
+  sortEventDown
 };

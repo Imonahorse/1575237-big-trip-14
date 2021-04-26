@@ -14,10 +14,9 @@ const addToFavourites = (boolean) => {
   return (boolean) ? 'event__favorite-btn event__favorite-btn--active' : 'event__favorite-btn';
 };
 
-const createEventTemplate = ({event, destination, offer}) => {
+const createEventTemplate = (event) => {
+  const {type, date, dateFrom, dateTo, duration, id, isFavorite, destination, offers} = event;
   const {name} = destination;
-  const {type, offers} = offer;
-  const {date, dateFrom, dateTo, duration, id, isFavorite} = event;
 
   const timeStart = humanizeTimeFormat(dateFrom);
   const timeEnd = humanizeTimeFormat(dateTo);

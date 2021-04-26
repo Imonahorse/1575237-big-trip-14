@@ -93,24 +93,20 @@ const createEvent = () => {
   const duration = msToTime(dateTo.diff(dateFrom));
 
   return {
-    event: {
-      basePrise: getRandomInteger(Price.MIN, Price.MAX),
-      date: generateDate(),
-      dateFrom,
-      dateTo,
-      duration,
-      id: nanoid(),
-      isFavorite: Boolean(getRandomInteger(0, 1)),
-    },
+    type: getArrayRandomElement(TYPES),
+    basePrise: getRandomInteger(Price.MIN, Price.MAX),
+    date: generateDate(),
+    dateFrom,
+    dateTo,
+    duration,
+    id: nanoid(),
+    isFavorite: Boolean(getRandomInteger(0, 1)),
     destination: {
       name: getArrayRandomElement(CITIES),
       description: getRandomArray(DESCRIPTIONS),
       picture: createRandomPicturesArray(),
     },
-    offer: {
-      type: getArrayRandomElement(TYPES),
-      offers: getRandomArray(OFFERS),
-    },
+    offers: getRandomArray(OFFERS),
   };
 };
 

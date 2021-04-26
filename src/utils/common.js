@@ -22,11 +22,17 @@ const updateItem = (items, update) => {
     ...items.slice(index + 1),
   ];
 };
+const SortType = {
+  DAY: 'day',
+  TIME: 'time',
+  PRICE: 'price',
+};
 
 export {
   getArrayRandomElement,
   getRandomArray,
   getRandomInteger,
   isEscEvent,
-  updateItem
+  updateItem,
+  SortType
 };

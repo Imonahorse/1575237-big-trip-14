@@ -4,30 +4,31 @@ import NewEventView from '../view/new-event.js';
 import NoEventView from '../view/no-event.js';
 import {render, RenderPosition} from '../utils/render.js';
 import EventPresenter from './event.js';
-import {updateItem} from '../utils/common.js';
+import {updateItem, SortType} from '../utils/common.js';
+import dayjs from 'dayjs';
 
 const EMPTY_EVENTS_LIST = 0;
 
 class Board {
   constructor(boardContainer) {
+    this._eventPresenter = {};
+    this._currentSortType = SortType.DAY;
     this._boardContainer = boardContainer;
+
     this._sortComponent = new SortingView();
     this._noEventComponent = new NoEventView();
     this._newEventComponent = new NewEventView();
     this._eventsListComponent = new EventsListView();
-    this._eventPresenter = {};
 
     this._handleEventDataChange = this._handleEventDataChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
   init(boardEvents) {
-    this._boardEvents = boardEvents;
+    this._boardEvents = boardEvents.slice();
+    this._sourcedBoardEvents = boardEvents.slice();
     this._renderBoard();
-  }
-
-  _renderNoEvents() {
-    render(this._boardContainer, this._noEventComponent, RenderPosition.AFTERBEGIN);
   }
 
   _handleModeChange() {
@@ -38,11 +39,42 @@ class Board {
 
   _handleEventDataChange(updatedEvent) {
     this._boardEvents = updateItem(this._boardEvents, updatedEvent);
+    this._sourcedBoardEvents = updateItem(this._sourcedBoardEvents, updatedEvent);
     this._eventPresenter[updatedEvent.id].init(updatedEvent);
+  }
+
+  _sortEvents(sortType) {
+    switch (sortType) {
+      case SortType.TIME:
+        this._boardEvents.sort((a, b) => dayjs(a.dateTo - a.dateFrom) - (b.dateTo - b.dateFrom));
+        break;
+      case SortType.PRICE:
+        this._boardEvents.sort((a, b) => (a.basePrise) - (b.basePrise));
+        break;
+      default:
+        this._boardEvents = this._sourcedBoardEvents;
+    }
+
+    this._currentSortType = sortType;
+  }
+
+  _handleSortTypeChange(sortType) {
+    if (this._currentSortType === sortType) {
+      return;
+    }
+
+    this._sortEvents(sortType);
+    this._clearEventsList();
+    this._renderEvents();
   }
 
   _renderSorting() {
     render(this._boardContainer, this._sortComponent, RenderPosition.AFTERBEGIN);
+    this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
+  }
+
+  _renderNoEvents() {
+    render(this._boardContainer, this._noEventComponent, RenderPosition.AFTERBEGIN);
   }
 
   _renderEventsList() {

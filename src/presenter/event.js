@@ -60,7 +60,7 @@ class Event {
   }
 
   resetView() {
-    if (this._mode !== Mode.EDITING) {
+    if (this._mode !== Mode.DEFAULT) {
       this._replaceFormToCard();
     }
   }
