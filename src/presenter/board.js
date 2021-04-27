@@ -12,6 +12,7 @@ const EMPTY_EVENTS_LIST = 0;
 class Board {
   constructor(boardContainer) {
     this._eventPresenter = {};
+    console.log(this._eventPresenter);
     this._currentSortType = SortType.DAY;
     this._boardContainer = boardContainer;
 
@@ -26,30 +27,18 @@ class Board {
   }
 
   init(boardEvents) {
-    this._boardEvents = boardEvents.slice();
-    this._sourcedBoardEvents = boardEvents.slice();
+    this._boardEvents = boardEvents;
+    this._sourcedBoardEvents = boardEvents;
     this._renderBoard();
-  }
-
-  _handleModeChange() {
-    Object
-      .values(this._eventPresenter)
-      .forEach((presenter) => presenter.resetView());
-  }
-
-  _handleEventDataChange(updatedEvent) {
-    this._boardEvents = updateItem(this._boardEvents, updatedEvent);
-    this._sourcedBoardEvents = updateItem(this._sourcedBoardEvents, updatedEvent);
-    this._eventPresenter[updatedEvent.id].init(updatedEvent);
   }
 
   _sortEvents(sortType) {
     switch (sortType) {
       case SortType.TIME:
-        this._boardEvents.sort((a, b) => dayjs(a.dateTo - a.dateFrom) - (b.dateTo - b.dateFrom));
+        this._boardEvents.sort((a, b) => dayjs(b.dateTo - b.dateFrom) - (a.dateTo - a.dateFrom));
         break;
       case SortType.PRICE:
-        this._boardEvents.sort((a, b) => (a.basePrise) - (b.basePrise));
+        this._boardEvents.sort((a, b) => b.basePrice - a.basePrice);
         break;
       default:
         this._boardEvents = this._sourcedBoardEvents;
@@ -73,12 +62,16 @@ class Board {
     this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
 
-  _renderNoEvents() {
-    render(this._boardContainer, this._noEventComponent, RenderPosition.AFTERBEGIN);
+  _handleModeChange() {
+    Object
+      .values(this._eventPresenter)
+      .forEach((presenter) => presenter.resetView());
   }
 
-  _renderEventsList() {
-    render(this._boardContainer, this._eventsListComponent, RenderPosition.BEFOREEND);
+  _handleEventDataChange(updatedEvent) {
+    this._boardEvents = updateItem(this._boardEvents, updatedEvent);
+    this._sourcedBoardEvents = updateItem(this._sourcedBoardEvents, updatedEvent);
+    this._eventPresenter[updatedEvent.id].init(updatedEvent);
   }
 
   _renderEvent(event) {
@@ -101,6 +94,14 @@ class Board {
       .forEach((presenter) => presenter.destroy());
 
     this._eventPresenter = {};
+  }
+
+  _renderNoEvents() {
+    render(this._boardContainer, this._noEventComponent, RenderPosition.AFTERBEGIN);
+  }
+
+  _renderEventsList() {
+    render(this._boardContainer, this._eventsListComponent, RenderPosition.BEFOREEND);
   }
 
   _renderBoard() {

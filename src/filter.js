@@ -1,9 +1,9 @@
 import {isEventComing, isEventExpired} from './utils/event.js';
 
 const eventToFilterMap = {
-  everything: (events) => events.filter((event) => event.date).length,
-  future: (events) => events.filter((event) => isEventComing(event.date)).length,
-  past: (events) => events.filter((event) => isEventExpired(event.date)).length,
+  everything: (events) => events.filter((event) => event.dueDate).length,
+  future: (events) => events.filter((event) => isEventComing(event.dueDate)).length,
+  past: (events) => events.filter((event) => isEventExpired(event.dueDate)).length,
 };
 
 const generateFilter = (events) => {
