@@ -69,11 +69,13 @@ class Event {
   _replaceCardToForm() {
     this._changeMode();
     this._mode = Mode.EDITING;
+
     replace(this._eventEditComponent, this._eventComponent);
   }
 
   _replaceFormToCard() {
     this._mode = Mode.DEFAULT;
+
     replace(this._eventComponent, this._eventEditComponent);
   }
 

@@ -12,7 +12,6 @@ const EMPTY_EVENTS_LIST = 0;
 class Board {
   constructor(boardContainer) {
     this._eventPresenter = {};
-    console.log(this._eventPresenter);
     this._currentSortType = SortType.DAY;
     this._boardContainer = boardContainer;
 

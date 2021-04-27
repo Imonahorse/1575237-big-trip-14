@@ -2,8 +2,7 @@ import {
   generateDate,
   generateDateFrom,
   generateDateTo,
-  calcPrice,
-  humanizeDateFormat
+  calcPrice
 } from '../utils/event.js';
 import {
   getArrayRandomElement,
