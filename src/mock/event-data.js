@@ -12,16 +12,16 @@ import {
 import {nanoid} from 'nanoid';
 
 const TYPES = [
-  'Check-in',
-  'Sightseeing',
-  'Restaurant',
-  'Taxi',
-  'Bus',
-  'Train',
-  'Ship',
-  'Transport',
-  'Drive',
-  'Flight',
+  'check-in',
+  'sightseeing',
+  'restaurant',
+  'taxi',
+  'bus',
+  'train',
+  'ship',
+  'transport',
+  'drive',
+  'flight',
 ];
 const CITIES = [
   'London',
