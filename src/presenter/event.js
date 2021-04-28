@@ -21,6 +21,7 @@ class Event {
     this._handleCloseEditClick = this._handleCloseEditClick.bind(this);
     this._escKeydownHandler = this._escKeydownHandler.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
+    this._handleSubmitEditClick = this._handleSubmitEditClick.bind(this);
   }
 
   init(event) {
@@ -35,7 +36,7 @@ class Event {
     this._eventComponent.setEditClickHandler(this._handleEditClick);
     this._eventComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._eventEditComponent.setEditClickHandler(this._handleCloseEditClick);
-    this._eventEditComponent.setFormSubmitHandler(this._handleCloseEditClick);
+    this._eventEditComponent.setFormSubmitHandler(this._handleSubmitEditClick);
 
     if (prevComponent === null || prevEditComponent === null) {
       render(this._eventListComponent, this._eventComponent, RenderPosition.BEFOREEND);
@@ -68,11 +69,13 @@ class Event {
   _replaceCardToForm() {
     this._changeMode();
     this._mode = Mode.EDITING;
+
     replace(this._eventEditComponent, this._eventComponent);
   }
 
   _replaceFormToCard() {
     this._mode = Mode.DEFAULT;
+
     replace(this._eventComponent, this._eventEditComponent);
   }
 
@@ -93,7 +96,11 @@ class Event {
     document.addEventListener('keydown', this._escKeydownHandler);
   }
 
-  _handleCloseEditClick(event) {
+  _handleCloseEditClick() {
+    this._closeEventEditForm();
+  }
+
+  _handleSubmitEditClick(event) {
     this._changeData(event);
     this._closeEventEditForm();
   }

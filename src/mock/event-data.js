@@ -1,7 +1,8 @@
 import {
   generateDate,
   generateDateFrom,
-  generateDateTo
+  generateDateTo,
+  calcPrice
 } from '../utils/event.js';
 import {
   getArrayRandomElement,
@@ -10,22 +11,26 @@ import {
 } from '../utils/common.js';
 import {nanoid} from 'nanoid';
 
-const TYPES = ['Check-in',
-  'Sightseeing',
-  'Restaurant',
-  'Taxi',
-  'Bus',
-  'Train',
-  'Ship',
-  'Transport',
-  'Drive',
-  'Flight'];
-const CITIES = ['London',
+const TYPES = [
+  'check-in',
+  'sightseeing',
+  'restaurant',
+  'taxi',
+  'bus',
+  'train',
+  'ship',
+  'transport',
+  'drive',
+  'flight',
+];
+const CITIES = [
+  'London',
   'Paris',
   'Moscow',
   'Amsterdam',
   'Warsaw',
-  'New-Vasiuky'];
+  'New-Vasiuky',
+];
 const DESCRIPTIONS = [
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet constius magna, non porta ligula feugiat eget.',
   'Fusce tristique felis at fermentum pharetra.',
@@ -64,10 +69,6 @@ const PICTURE = {
   alt: getArrayRandomElement(DESCRIPTIONS),
 };
 const PHOTOS_MAX_LENGTH = 5;
-const Price = {
-  MIN: 100,
-  MAX: 1000,
-};
 
 const createRandomPicturesArray = () => {
   return new Array(getRandomInteger(PHOTOS_MAX_LENGTH)).fill().map(() => PICTURE);
@@ -91,11 +92,11 @@ const createEvent = () => {
   const dateFrom = generateDateFrom();
   const dateTo = generateDateTo(dateFrom);
   const duration = msToTime(dateTo.diff(dateFrom));
+  const offers = getRandomArray(OFFERS);
 
   return {
     type: getArrayRandomElement(TYPES),
-    basePrise: getRandomInteger(Price.MIN, Price.MAX),
-    date: generateDate(),
+    dueDate: generateDate(),
     dateFrom,
     dateTo,
     duration,
@@ -106,7 +107,8 @@ const createEvent = () => {
       description: getRandomArray(DESCRIPTIONS),
       picture: createRandomPicturesArray(),
     },
-    offers: getRandomArray(OFFERS),
+    offers,
+    basePrice: calcPrice(offers),
   };
 };
 

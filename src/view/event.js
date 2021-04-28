@@ -1,4 +1,4 @@
-import {humanizeTimeFormat, humanizeDateFormat, calcPrice} from '../utils/event.js';
+import {humanizeDateFormat, humanizeTimeFormat} from '../utils/event.js';
 import AbstractView from './abstract.js';
 
 const createOffersTemplate = (offers) => {
@@ -15,16 +15,16 @@ const addToFavourites = (boolean) => {
 };
 
 const createEventTemplate = (event) => {
-  const {type, date, dateFrom, dateTo, duration, id, isFavorite, destination, offers} = event;
+  const {type, dueDate, dateFrom, dateTo, duration, id, isFavorite, destination, offers, basePrice} = event;
   const {name} = destination;
 
+  const date = humanizeDateFormat(dueDate);
   const timeStart = humanizeTimeFormat(dateFrom);
   const timeEnd = humanizeTimeFormat(dateTo);
-  const dueDate = humanizeDateFormat(date);
 
   return `<li class="trip-events__item" id="${id}">
               <div class="event">
-                <time class="event__date" datetime="2019-03-18">${dueDate}</time>
+                <time class="event__date" datetime="2019-03-18">${date}</time>
                 <div class="event__type">
                   <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
                 </div>
@@ -38,7 +38,7 @@ const createEventTemplate = (event) => {
                   <p class="event__duration">${duration}</p>
                 </div>
                 <p class="event__price">
-                  &euro;&nbsp;<span class="event__price-value">${calcPrice(offers)}</span>
+                  &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
                 </p>
                 <h4 class="visually-hidden">Offers:</h4>
                 <ul class="event__selected-offers">
