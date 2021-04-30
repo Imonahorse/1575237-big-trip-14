@@ -15,7 +15,8 @@ const addToFavourites = (boolean) => {
 };
 
 const createEventTemplate = (event) => {
-  const {type, dueDate, dateFrom, dateTo, duration, id, isFavorite, destination, offers, basePrice} = event;
+  const {dueDate, dateFrom, dateTo, duration, id, isFavorite, destination, basePrice, offer} = event;
+  const {type, offers} = offer;
   const {name} = destination;
 
   const date = humanizeDateFormat(dueDate);

@@ -64,14 +64,17 @@ const OFFERS = [
     price: 40,
   },
 ];
-const PICTURE = {
-  src: `http://picsum.photos/248/152?r=${getRandomInteger(0, 9)}`,
-  alt: getArrayRandomElement(DESCRIPTIONS),
-};
-const PHOTOS_MAX_LENGTH = 5;
+const PHOTOS_MIN_LENGTH = 0;
+const PHOTOS_MAX_LENGTH = 0;
 
 const createRandomPicturesArray = () => {
-  return new Array(getRandomInteger(PHOTOS_MAX_LENGTH)).fill().map(() => PICTURE);
+  return new Array(getRandomInteger(PHOTOS_MIN_LENGTH, PHOTOS_MAX_LENGTH)).fill().map(() => {
+    const picture = {
+      src: `http://picsum.photos/248/152?r=${getRandomInteger(0, 9)}`,
+      alt: getArrayRandomElement(DESCRIPTIONS),
+    };
+    return picture;
+  });
 };
 const msToTime = (duration) => {
   const minutes = Math.floor((duration / (1000 * 60)) % 60);
@@ -95,7 +98,6 @@ const createEvent = () => {
   const offers = getRandomArray(OFFERS);
 
   return {
-    type: getArrayRandomElement(TYPES),
     dueDate: generateDate(),
     dateFrom,
     dateTo,
@@ -107,7 +109,10 @@ const createEvent = () => {
       description: getRandomArray(DESCRIPTIONS),
       picture: createRandomPicturesArray(),
     },
-    offers,
+    offer: {
+      type: getArrayRandomElement(TYPES),
+      offers,
+    },
     basePrice: calcPrice(offers),
   };
 };

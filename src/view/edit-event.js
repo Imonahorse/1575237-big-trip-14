@@ -14,9 +14,16 @@ const createOffersTemplate = (offers) => {
   }).join('');
 };
 
+const createPhotosTemplate = (photos) => {
+  return photos.map((photo) => {
+    return `<img class="event__photo" src=${photo.src} alt=${photo.alt}>`;
+  }).join('');
+};
+
 const createEditEventTemplate = (event) => {
-  const {type, dueDate, dateFrom, dateTo, id, destination, offers, basePrice} = event;
-  const {name, description} = destination;
+  const {dueDate, dateFrom, dateTo, id, destination, offer, basePrice} = event;
+  const {name, description, picture} = destination;
+  const {type, offers} = offer;
 
   const timeStart = humanizeTimeFormat(dateFrom);
   const timeEnd = humanizeTimeFormat(dateTo);
@@ -118,6 +125,11 @@ const createEditEventTemplate = (event) => {
                   <section class="event__section  event__section--destination">
                     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
                     <p class="event__destination-description">${description}</p>
+                    <div class="event__photos-container">
+                      <div class="event__photos-tape">
+                        ${createPhotosTemplate(picture)}
+                      </div>
+                    </div>
                   </section>
                 </section>
               </form>
