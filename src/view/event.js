@@ -2,6 +2,10 @@ import {humanizeDateFormat, humanizeTimeFormat} from '../utils/event.js';
 import AbstractView from './abstract.js';
 
 const createOffersTemplate = (offers) => {
+  if (offers === null) {
+    return '';
+  }
+
   return offers.map((item) => {
     return `<li class="event__offer">
         <span class="event__offer-title">${item.title}</span>

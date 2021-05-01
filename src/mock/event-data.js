@@ -65,15 +65,15 @@ const OFFERS = [
   },
 ];
 const PHOTOS_MIN_LENGTH = 0;
-const PHOTOS_MAX_LENGTH = 0;
+const PHOTOS_MAX_LENGTH = 5;
 
 const createRandomPicturesArray = () => {
   return new Array(getRandomInteger(PHOTOS_MIN_LENGTH, PHOTOS_MAX_LENGTH)).fill().map(() => {
-    const picture = {
+    const img = {
       src: `http://picsum.photos/248/152?r=${getRandomInteger(0, 9)}`,
       alt: getArrayRandomElement(DESCRIPTIONS),
     };
-    return picture;
+    return img;
   });
 };
 const msToTime = (duration) => {
@@ -95,7 +95,7 @@ const createEvent = () => {
   const dateFrom = generateDateFrom();
   const dateTo = generateDateTo(dateFrom);
   const duration = msToTime(dateTo.diff(dateFrom));
-  const offers = getRandomArray(OFFERS);
+  const offers = Math.random() < 0.3 ? null : getRandomArray(OFFERS);
 
   return {
     dueDate: generateDate(),
@@ -106,14 +106,14 @@ const createEvent = () => {
     isFavorite: Boolean(getRandomInteger(0, 1)),
     destination: {
       name: getArrayRandomElement(CITIES),
-      description: getRandomArray(DESCRIPTIONS),
-      picture: createRandomPicturesArray(),
+      description: Math.random() < 0.5 ? null : getRandomArray(DESCRIPTIONS),
+      picture: Math.random() < 0.5 ? null : createRandomPicturesArray(),
     },
     offer: {
       type: getArrayRandomElement(TYPES),
       offers,
     },
-    basePrice: calcPrice(offers),
+    basePrice: offers ? calcPrice(offers) : 0,
   };
 };
 

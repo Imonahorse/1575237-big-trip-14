@@ -111,7 +111,7 @@ class Board {
 
     this._renderSorting();
     this._renderEvents();
-    this._renderNewEvent();
+    // this._renderNewEvent();
     this._renderEventsList();
   }
 }

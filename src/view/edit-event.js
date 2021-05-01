@@ -1,27 +1,53 @@
 import {humanizeTimeFormat, humanizeEditEventDateFormat} from '../utils/event.js';
 import AbstractView from './abstract.js';
 
-const createOffersTemplate = (offers) => {
-  return offers.map((item) => {
-    return `    <div class="event__offer-selector">
-                        <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
-                        <label class="event__offer-label" for="event-offer-luggage-1">
-                          <span class="event__offer-title">${item.title}</span>
-                          &plus;&euro;&nbsp;
-                          <span class="event__offer-price">${item.price}</span>
-                        </label>
-                      </div>`;
-  }).join('');
-};
-
 const createPhotosTemplate = (photos) => {
+  if (photos === null) {
+    return '';
+  }
+
   return photos.map((photo) => {
     return `<img class="event__photo" src=${photo.src} alt=${photo.alt}>`;
   }).join('');
 };
+const createOffersList = (offers) => {
+  return offers.map((item) => {
+    return `    <div class="event__offer-selector">
+                    <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
+                    <label class="event__offer-label" for="event-offer-luggage-1">
+                    <span class="event__offer-title">${item.title}</span>
+                    &plus;&euro;&nbsp;
+                    <span class="event__offer-price">${item.price}</span>
+                    </label>
+                    </div>`;
+  }).join('');
+};
+const createOffersTemplate = (offers, offersState) => {
+  return offersState ? `<section class="event__section  event__section--offers">
+                    <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+                    <div class="event__available-offers">
+                       ${createOffersList(offers)}
+                    </div>
+                  </section>` : '';
+};
+const createDescriptionTemplate = (pictures, description) => {
+  if (description === null) {
+    return '';
+  }
+
+  return `     <section class="event__section  event__section--destination">
+                    <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+                    <p class="event__destination-description">${description}</p>
+                    <div class="event__photos-container">
+                      <div class="event__photos-tape">
+                        ${createPhotosTemplate(pictures)}
+                      </div>
+                    </div>
+                  </section>`;
+};
 
 const createEditEventTemplate = (event) => {
-  const {dueDate, dateFrom, dateTo, id, destination, offer, basePrice} = event;
+  const {dueDate, dateFrom, dateTo, id, destination, offer, basePrice, offersState} = event;
   const {name, description, picture} = destination;
   const {type, offers} = offer;
 
@@ -116,20 +142,8 @@ const createEditEventTemplate = (event) => {
                   </button>
                 </header>
                 <section class="event__details">
-                  <section class="event__section  event__section--offers">
-                    <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-                    <div class="event__available-offers">
-                        ${createOffersTemplate(offers)}
-                    </div>
-                  </section>
-                  <section class="event__section  event__section--destination">
-                    <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-                    <p class="event__destination-description">${description}</p>
-                    <div class="event__photos-container">
-                      <div class="event__photos-tape">
-                        ${createPhotosTemplate(picture)}
-                      </div>
-                    </div>
+                        ${createOffersTemplate(offers, offersState)}
+                        ${createDescriptionTemplate(picture, description)}
                   </section>
                 </section>
               </form>
@@ -139,23 +153,43 @@ const createEditEventTemplate = (event) => {
 class EditEvent extends AbstractView {
   constructor(event) {
     super();
-    this._event = event;
+    this._data = EditEvent.changeEventToData(event);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._editClickHandler = this._editClickHandler.bind(this);
   }
 
   getTemplate() {
-    return createEditEventTemplate(this._event);
+    return createEditEventTemplate(this._data);
+  }
+
+  static changeEventToData(event) {
+    return Object.assign({},
+      event,
+      {
+        offersState: event.offer.offers !== null,
+      });
+  }
+
+  static changeDataToEvent(data) {
+    const newData = Object.assign({}, data);
+
+    if (!newData.offersState) {
+      newData.offer.offers = null;
+    }
+
+    delete newData.offersState;
+
+    return newData;
   }
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(this._event);
+    this._callback.formSubmit(EditEvent.changeDataToEvent(this._data));
   }
 
   _editClickHandler(evt) {
     evt.preventDefault();
-    this._callback.editClick(this._event);
+    this._callback.editClick(EditEvent.changeDataToEvent(this._data));
   }
 
   setFormSubmitHandler(callback) {
