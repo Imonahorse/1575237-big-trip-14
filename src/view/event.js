@@ -19,8 +19,7 @@ const addToFavourites = (boolean) => {
 };
 
 const createEventTemplate = (event) => {
-  const {dueDate, dateFrom, dateTo, duration, id, isFavorite, destination, basePrice, offer} = event;
-  const {type, offers} = offer;
+  const {dueDate, dateFrom, dateTo, duration, id, isFavorite, destination, basePrice, offer, type} = event;
   const {name} = destination;
 
   const date = humanizeDateFormat(dueDate);
@@ -47,7 +46,7 @@ const createEventTemplate = (event) => {
                 </p>
                 <h4 class="visually-hidden">Offers:</h4>
                 <ul class="event__selected-offers">
-                    ${createOffersTemplate(offers)}
+                    ${createOffersTemplate(offer)}
                 </ul>
                 <button class="${addToFavourites(isFavorite)}" type="button">
                   <span class="visually-hidden">Add to favorite</span>

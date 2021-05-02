@@ -6,7 +6,6 @@ import {
 } from '../utils/event.js';
 import {
   getArrayRandomElement,
-  getRandomArray,
   getRandomInteger
 } from '../utils/common.js';
 import {nanoid} from 'nanoid';
@@ -42,30 +41,12 @@ const DESCRIPTIONS = [
   'Nunc fermentum tortor ac porta dapibus.',
   'In rutrum ac purus sit amet tempus.',
 ];
-const OFFERS = [
-  {
-    title: 'Add luggage',
-    price: 30,
-  },
-  {
-    title: 'Switch to comfort class',
-    price: 100,
-  },
-  {
-    title: 'Add meal',
-    price: 15,
-  },
-  {
-    title: 'Choose seats',
-    price: 5,
-  },
-  {
-    title: 'Travel by train',
-    price: 40,
-  },
-];
+const OFFERS_TITLE = ['Add luggage', 'Switch to comfort class', 'Add meal', 'Choose seats', 'Travel by train'];
+const OFFERS_PRICE = [30, 100, 15, 5, 40];
 const PHOTOS_MIN_LENGTH = 0;
 const PHOTOS_MAX_LENGTH = 5;
+const OFFERS_MIN_COUNT = 1;
+const OFFERS_MAX_COUNT = 10;
 
 const createRandomPicturesArray = () => {
   return new Array(getRandomInteger(PHOTOS_MIN_LENGTH, PHOTOS_MAX_LENGTH)).fill().map(() => {
@@ -90,31 +71,64 @@ const msToTime = (duration) => {
 
   return hours + 'H :' + minutes + 'M';
 };
+const getOfferTypes = () => {
+  const offerTypes = new Map();
+
+  TYPES.forEach((type) => {
+    const offersCount = getRandomInteger(OFFERS_MIN_COUNT, OFFERS_MAX_COUNT);
+    const offers = [];
+    for (let i = 0; i < offersCount; i++) {
+      offers.push({
+        title: getArrayRandomElement(OFFERS_TITLE),
+        price: getArrayRandomElement(OFFERS_PRICE),
+      });
+    }
+    offerTypes.set(type, offers);
+  });
+  return offerTypes;
+};
+const getDestinationTypes = () => {
+  const destinationTypes = new Map();
+
+  CITIES.forEach((city) => {
+    const pictures = createRandomPicturesArray();
+    const descriptions = getArrayRandomElement(DESCRIPTIONS);
+
+    destinationTypes.set(city, {descriptions, pictures});
+  });
+  return destinationTypes;
+};
 
 const createEvent = () => {
   const dateFrom = generateDateFrom();
   const dateTo = generateDateTo(dateFrom);
   const duration = msToTime(dateTo.diff(dateFrom));
-  const offers = Math.random() < 0.3 ? null : getRandomArray(OFFERS);
+  const offerTypes = getOfferTypes();
+  const destinationTypes = getDestinationTypes();
 
-  return {
+  console.log(destinationTypes);
+
+  const event = {
     dueDate: generateDate(),
     dateFrom,
     dateTo,
     duration,
     id: nanoid(),
     isFavorite: Boolean(getRandomInteger(0, 1)),
+    type: getArrayRandomElement(TYPES),
     destination: {
       name: getArrayRandomElement(CITIES),
-      description: Math.random() < 0.5 ? null : getRandomArray(DESCRIPTIONS),
-      picture: Math.random() < 0.5 ? null : createRandomPicturesArray(),
     },
-    offer: {
-      type: getArrayRandomElement(TYPES),
-      offers,
-    },
-    basePrice: offers ? calcPrice(offers) : 0,
   };
+
+  const offers = offerTypes.get(event.type);
+  const destination = destinationTypes.get(event.destination.name);
+  event.offer = offers;
+  event.destination.description = destination.descriptions;
+  event.destination.picture = destination.pictures;
+  event.basePrice = offers ? calcPrice(offers) : 0;
+
+  return event;
 };
 
-export {createEvent};
+export {createEvent, getOfferTypes, getDestinationTypes};

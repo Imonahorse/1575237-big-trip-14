@@ -1,4 +1,5 @@
 import {humanizeTimeFormat, humanizeEditEventDateFormat} from '../utils/event.js';
+import {getOfferTypes, getDestinationTypes} from '../mock/event-data.js';
 import AbstractView from './abstract.js';
 
 const createPhotosTemplate = (photos) => {
@@ -26,7 +27,7 @@ const createOffersTemplate = (offers, offersState) => {
   return offersState ? `<section class="event__section  event__section--offers">
                     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
                     <div class="event__available-offers">
-                       ${createOffersList(offers)}
+                       ${createOffersList(offers, offersState)}
                     </div>
                   </section>` : '';
 };
@@ -47,9 +48,8 @@ const createDescriptionTemplate = (pictures, description) => {
 };
 
 const createEditEventTemplate = (event) => {
-  const {dueDate, dateFrom, dateTo, id, destination, offer, basePrice, offersState} = event;
+  const {dueDate, dateFrom, dateTo, id, destination, offer, basePrice, offersState, type} = event;
   const {name, description, picture} = destination;
-  const {type, offers} = offer;
 
   const timeStart = humanizeTimeFormat(dateFrom);
   const timeEnd = humanizeTimeFormat(dateTo);
@@ -142,7 +142,7 @@ const createEditEventTemplate = (event) => {
                   </button>
                 </header>
                 <section class="event__details">
-                        ${createOffersTemplate(offers, offersState)}
+                        ${createOffersTemplate(offer, offersState)}
                         ${createDescriptionTemplate(picture, description)}
                   </section>
                 </section>
@@ -154,32 +154,74 @@ class EditEvent extends AbstractView {
   constructor(event) {
     super();
     this._data = EditEvent.changeEventToData(event);
+    this._offersMap = getOfferTypes();
+    this._descriptionsMap = getDestinationTypes();
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._editClickHandler = this._editClickHandler.bind(this);
+
+    this._typeToggleHandler = this._typeToggleHandler.bind(this);
+    this._destinationInputHandler = this._destinationInputHandler.bind(this);
+
+    this.getElement().querySelector('.event__type-list').addEventListener('change', this._typeToggleHandler);
+    this.getElement().querySelector('.event__input--destination').addEventListener('change', this._destinationInputHandler);
   }
 
   getTemplate() {
     return createEditEventTemplate(this._data);
   }
 
+  updateElement() {
+    const prevElement = this.getElement();
+    const parent = prevElement.parentElement;
+    this.removeElement();
+
+    const newElement = this.getElement();
+
+    parent.replaceChild(newElement, prevElement);
+  }
+
+  updateData(update) {
+    if (!update) {
+      return;
+    }
+
+    Object.assign({}, this._data, update);
+    this.updateElement();
+  }
+
   static changeEventToData(event) {
-    return Object.assign({},
-      event,
-      {
-        offersState: event.offer.offers !== null,
-      });
+    return Object.assign({}, event, {offersState: event.offer !== null});
   }
 
   static changeDataToEvent(data) {
     const newData = Object.assign({}, data);
 
     if (!newData.offersState) {
-      newData.offer.offers = null;
+      newData.offer = null;
     }
 
     delete newData.offersState;
 
     return newData;
+  }
+
+  _typeToggleHandler(evt) {
+    evt.preventDefault();
+    this._data.type = evt.target.value;
+    this.updateData({
+      offer: this._offersMap.get(this._data.type),
+    });
+  }
+
+  _destinationInputHandler(evt) {
+    evt.preventDefault();
+
+    const destination = this._descriptionsMap.get(this._data.destination.name);
+    this._data.destination.name = evt.target.value;
+    this._data.destination.description = destination.descriptions;
+    this._data.destination.picture = destination.pictures;
+
+    this.updateData(this._data);
   }
 
   _formSubmitHandler(evt) {
