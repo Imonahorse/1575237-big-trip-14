@@ -106,8 +106,6 @@ const createEvent = () => {
   const offerTypes = getOfferTypes();
   const destinationTypes = getDestinationTypes();
 
-  console.log(destinationTypes);
-
   const event = {
     dueDate: generateDate(),
     dateFrom,

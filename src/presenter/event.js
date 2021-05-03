@@ -87,6 +87,7 @@ class Event {
   _escKeydownHandler(evt) {
     if (isEscEvent(evt)) {
       evt.preventDefault();
+      this._eventEditComponent.reset(this._event);
       this._closeEventEditForm();
     }
   }

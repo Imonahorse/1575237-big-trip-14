@@ -1,6 +1,6 @@
 import {humanizeTimeFormat, humanizeEditEventDateFormat} from '../utils/event.js';
 import {getOfferTypes, getDestinationTypes} from '../mock/event-data.js';
-import AbstractView from './abstract.js';
+import SmartView from './Smart.js';
 
 const createPhotosTemplate = (photos) => {
   if (photos === null) {
@@ -48,6 +48,8 @@ const createDescriptionTemplate = (pictures, description) => {
 };
 
 const createEditEventTemplate = (event) => {
+
+  console.log(event);
   const {dueDate, dateFrom, dateTo, id, destination, offer, basePrice, offersState, type} = event;
   const {name, description, picture} = destination;
 
@@ -150,15 +152,15 @@ const createEditEventTemplate = (event) => {
             </li>`;
 };
 
-class EditEvent extends AbstractView {
+class EditEvent extends SmartView {
   constructor(event) {
     super();
     this._data = EditEvent.changeEventToData(event);
     this._offersMap = getOfferTypes();
     this._descriptionsMap = getDestinationTypes();
+
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._editClickHandler = this._editClickHandler.bind(this);
-
     this._typeToggleHandler = this._typeToggleHandler.bind(this);
     this._destinationInputHandler = this._destinationInputHandler.bind(this);
 
@@ -170,23 +172,10 @@ class EditEvent extends AbstractView {
     return createEditEventTemplate(this._data);
   }
 
-  updateElement() {
-    const prevElement = this.getElement();
-    const parent = prevElement.parentElement;
-    this.removeElement();
-
-    const newElement = this.getElement();
-
-    parent.replaceChild(newElement, prevElement);
-  }
-
-  updateData(update) {
-    if (!update) {
-      return;
-    }
-
-    Object.assign({}, this._data, update);
-    this.updateElement();
+  reset(event) {
+    this.updateData(
+      EditEvent.changeEventToData(event),
+    );
   }
 
   static changeEventToData(event) {
@@ -205,23 +194,39 @@ class EditEvent extends AbstractView {
     return newData;
   }
 
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setEditClickHandler(this._callback.editClick);
+    this.setFormSubmitHandler(this._callback.formSubmit);
+  }
+
+  _setInnerHandlers() {
+    this.getElement().querySelector('.event__type-list').addEventListener('change', this._typeToggleHandler);
+    this.getElement().querySelector('.event__input--destination').addEventListener('change', this._destinationInputHandler);
+  }
+
   _typeToggleHandler(evt) {
     evt.preventDefault();
     this._data.type = evt.target.value;
-    this.updateData({
-      offer: this._offersMap.get(this._data.type),
-    });
+    this._data.offer = this._offersMap.get(this._data.type);
+
+    this.updateData(this._data);
   }
 
   _destinationInputHandler(evt) {
     evt.preventDefault();
+    const value = evt.target.value;
 
-    const destination = this._descriptionsMap.get(this._data.destination.name);
-    this._data.destination.name = evt.target.value;
-    this._data.destination.description = destination.descriptions;
-    this._data.destination.picture = destination.pictures;
+    // const destination = this._descriptionsMap.get(this._data.destination.name);
+    // this._data.destination.name = evt.target.value;
+    // this._data.destination.description = destination.descriptions;
+    // this._data.destination.picture = destination.pictures;
 
-    this.updateData(this._data);
+    this.updateData({
+      destination: {
+        name: value,
+      },
+    });
   }
 
   _formSubmitHandler(evt) {
