@@ -8,16 +8,17 @@ const generateDate = () => {
   const day = dayjs().add(daysGap, 'day').toDate();
   return dayjs(day);
 };
-const generateDateFrom = () => {
+const generateDateFrom = (day) => {
   const hour = getRandomInteger(1, 24);
   const minute = getRandomInteger(1, 60);
-  const item = dayjs().add(hour, 'hour').add(minute, 'm').toDate();
+  const item = dayjs(day).add(hour, 'hour').add(minute, 'm').toDate();
   return dayjs(item);
 };
 const generateDateTo = (dateFrom) => {
+  const day = getRandomInteger(0, 3);
   const hour = getRandomInteger(1, 24);
   const minute = getRandomInteger(1, 60);
-  const dateTo = dayjs(dateFrom).add(hour, 'hour').add(minute, 'm').toDate();
+  const dateTo = dayjs(dateFrom).add(day, 'day').add(hour, 'hour').add(minute, 'm').toDate();
   return dayjs(dateTo);
 
 };
@@ -28,7 +29,7 @@ const humanizeDateFormat = (date) => {
   return dayjs(date).format('D MMMM');
 };
 const humanizeEditEventDateFormat = (date) => {
-  return dayjs(date).format('DD/MM/YY');
+  return dayjs(date).format('DD/MM/YY HH:mm');
 };
 const isEventComing = (event) => {
   return dayjs().isAfter(event, 'D');

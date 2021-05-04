@@ -10,9 +10,9 @@ const tripMain = document.querySelector('.trip-main');
 const tripControlsNavigation = tripMain.querySelector('.trip-controls__navigation');
 const tripControlsFilters = tripMain.querySelector('.trip-controls__filters');
 const tripEventsSection = document.querySelector('.trip-events');
-const EVENTS_COUNT = 1;
+const EVENTS_COUNT = 5;
 
-const events = new Array(EVENTS_COUNT).fill().map(createEvent);
+const events = new Array(EVENTS_COUNT).fill().map(createEvent).sort((a,b) => b.dueDate - a.dueDate);
 const filters = generateFilter(events);
 const boardPresenter = new BoardPresenter(tripEventsSection);
 
