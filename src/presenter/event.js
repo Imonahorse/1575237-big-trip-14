@@ -98,6 +98,7 @@ class Event {
   }
 
   _handleCloseEditClick() {
+    this._eventEditComponent.reset(this._event);
     this._closeEventEditForm();
   }
 

@@ -1,5 +1,6 @@
 import {humanizeEditEventDateFormat, humanizeDateFormat} from '../utils/event.js';
-import {getOfferTypes, getDestinationTypes, TYPES} from '../mock/event-data.js';
+import {offersTypes, destinationTypes} from '../mock/data.js';
+import {TYPES, CITIES} from '../utils/constant.js';
 import SmartView from './Smart.js';
 import flatpickr from 'flatpickr';
 
@@ -7,15 +8,14 @@ import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 const createTypesListTemplate = (types, prevTypeState) => {
   return types.map((type) => {
-
     return `<div class="event__type-item">
-                <input id="event-type-${type.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value=${type.toLowerCase()} ${prevTypeState === type ? 'checked' : ''}>
-                <label class="event__type-label  event__type-label--${type.toLowerCase()}" for="event-type-${type.toLowerCase()}-1">${type.toLowerCase()}</label>
+                <input id="event-type-${type.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value=${type} ${prevTypeState.toLowerCase() === type.toLowerCase() ? 'checked' : ''}>
+                <label class="event__type-label  event__type-label--${type.toLowerCase()}" for="event-type-${type.toLowerCase()}-1">${type}</label>
             </div>`;
   }).join('');
 };
-const createPhotosTemplate = (photos) => {
-  if (photos === null) {
+const createPhotosTemplate = (photos, photosState) => {
+  if (!photosState) {
     return '';
   }
 
@@ -23,7 +23,11 @@ const createPhotosTemplate = (photos) => {
     return `<img class="event__photo" src=${photo.src} alt=${photo.alt}>`;
   }).join('');
 };
-const createOffersList = (offers) => {
+const createOffersList = (offers, hasOffersState) => {
+  if (!hasOffersState) {
+    return '';
+  }
+
   return offers.map((item) => {
     return `    <div class="event__offer-selector">
                     <input class="event__offer-checkbox  visually-hidden" id=${item.id} type="checkbox" name="event-offer-luggage" checked>
@@ -35,16 +39,16 @@ const createOffersList = (offers) => {
                     </div>`;
   }).join('');
 };
-const createOffersTemplate = (offers, offersState) => {
-  return offersState ? `<section class="event__section  event__section--offers">
+const createOffersTemplate = (offers, hasOffersState) => {
+  return hasOffersState ? `<section class="event__section  event__section--offers">
                     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
                     <div class="event__available-offers">
-                       ${createOffersList(offers, offersState)}
+                       ${createOffersList(offers, hasOffersState)}
                     </div>
                   </section>` : '';
 };
-const createDescriptionTemplate = (pictures, description) => {
-  if (description === null) {
+const createDescriptionTemplate = (pictures, description, hasDescriptionState, hasPicturesState) => {
+  if (!hasDescriptionState) {
     return '';
   }
 
@@ -53,14 +57,19 @@ const createDescriptionTemplate = (pictures, description) => {
                     <p class="event__destination-description">${description}</p>
                     <div class="event__photos-container">
                       <div class="event__photos-tape">
-                        ${createPhotosTemplate(pictures)}
+                        ${createPhotosTemplate(pictures, hasPicturesState)}
                       </div>
                     </div>
                   </section>`;
 };
+const createDataListTemplate = (cities) => {
+  return `<datalist id="destination-list-1">
+            ${cities.map((city) => `<option value=${city}></option>`).join('')}
+                    </datalist>`;
+};
 
 const createEditEventTemplate = (event) => {
-  const {dateFrom, dateTo, id, destination, offer, basePrice, offersState, type, prevTypeState} = event;
+  const {dateFrom, dateTo, id, destination, offer, basePrice, hasOffersState, type, prevTypeState, hasDescriptionState, hasPicturesState} = event;
   const {name, description, picture} = destination;
 
   const timeStart = humanizeEditEventDateFormat(dateFrom);
@@ -87,11 +96,7 @@ const createEditEventTemplate = (event) => {
                       ${type}
                     </label>
                     <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${name}" list="destination-list-1">
-                    <datalist id="destination-list-1">
-                      <option value="Amsterdam"></option>
-                      <option value="Geneva"></option>
-                      <option value="Chamonix"></option>
-                    </datalist>
+                        ${createDataListTemplate(CITIES)}
                   </div>
                   <div class="event__field-group  event__field-group--time">
                     <label class="visually-hidden" for="event-start-time-1">From</label>
@@ -114,8 +119,8 @@ const createEditEventTemplate = (event) => {
                   </button>
                 </header>
                 <section class="event__details">
-                        ${createOffersTemplate(offer, offersState)}
-                        ${createDescriptionTemplate(picture, description)}
+                        ${createOffersTemplate(offer, hasOffersState)}
+                        ${createDescriptionTemplate(picture, description, hasDescriptionState, hasPicturesState)}
                   </section>
                 </section>
               </form>
@@ -128,8 +133,6 @@ class EditEvent extends SmartView {
     this._dateFromPicker = null;
     this._dateToPicker = null;
     this._data = EditEvent.changeEventToState(event);
-    this._offersMap = getOfferTypes();
-    this._descriptionsMap = getDestinationTypes();
 
     this._dateFromChangeHandler = this._dateFromChangeHandler.bind(this);
     this._dateToChangeHandler = this._dateToChangeHandler.bind(this);
@@ -155,7 +158,9 @@ class EditEvent extends SmartView {
 
   static changeEventToState(event) {
     return Object.assign({}, event, {
-      offersState: event.offer !== null,
+      hasOffersState: event.offer !== null,
+      hasDescriptionState: event.destination.description !== null,
+      hasPicturesState: event.destination.picture !== null,
       prevTypeState: event.type,
     });
   }
@@ -163,12 +168,22 @@ class EditEvent extends SmartView {
   static changeStateToEvent(data) {
     const newData = Object.assign({}, data);
 
-    if (!newData.offersState) {
+    if (!newData.hasOffersState) {
       newData.offer = null;
     }
 
-    delete newData.offersState;
+    if (!newData.hasDescriptionState) {
+      newData.destination.description = null;
+    }
+
+    if (!newData.hasPicturesState) {
+      newData.destination.picture = null;
+    }
+
+    delete newData.hasOffersState;
     delete newData.prevTypeState;
+    delete newData.hasDescriptionState;
+    delete newData.hasPicturesState;
 
     return newData;
   }
@@ -240,35 +255,39 @@ class EditEvent extends SmartView {
 
   _typeToggleHandler(evt) {
     evt.preventDefault();
-    const value = evt.target.value;
-    const offers = this._offersMap.get(this._data.type);
+    const activeType = evt.target.value;
+    const offersForActiveType = offersTypes.get(activeType);
 
     this.updateData({
-      type: value,
-      offer: offers,
-      prevTypeState: value,
+      type: activeType,
+      offer: offersForActiveType,
+      prevTypeState: activeType,
+      hasOffersState: offersForActiveType !== null,
     });
   }
 
   _destinationInputHandler(evt) {
     evt.preventDefault();
-    const value = evt.target.value;
-    const valueCheck = this._descriptionsMap.has(value);
+    const destinationValue = evt.target.value;
+    const valueCheck = destinationTypes.has(destinationValue);
 
     if (valueCheck) {
-      const destination = this._descriptionsMap.get(value);
+      const destinationContent = destinationTypes.get(destinationValue);
 
       this.updateData({
         destination: {
-          name: value,
-          description: destination.descriptions,
-          picture: destination.pictures,
+          name: destinationValue,
+          description: destinationContent.descriptions,
+          picture: destinationContent.pictures,
         },
+        duration: this._data.duration,
+        hasDescriptionState: destinationContent.descriptions !== null,
+        hasPicturesState: destinationContent.pictures !== null,
       });
-    } else {
-      evt.target.setCustomValidity('This name is unavailable');
-      evt.target.reportValidity();
     }
+
+    evt.target.setCustomValidity('Choose another city');
+    evt.target.reportValidity();
   }
 
   _formSubmitHandler(evt) {

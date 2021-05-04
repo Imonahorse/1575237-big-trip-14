@@ -2,7 +2,7 @@ import SiteMenuView from './view/site-menu.js';
 import RouteInfoView from './view/route-info.js';
 import FiltersView from './view/filters.js';
 import BoardPresenter from './presenter/board.js';
-import {createEvent} from './mock/event-data.js';
+import {data} from './mock/data.js';
 import {generateFilter} from './filter.js';
 import {render, RenderPosition} from './utils/render.js';
 
@@ -10,10 +10,8 @@ const tripMain = document.querySelector('.trip-main');
 const tripControlsNavigation = tripMain.querySelector('.trip-controls__navigation');
 const tripControlsFilters = tripMain.querySelector('.trip-controls__filters');
 const tripEventsSection = document.querySelector('.trip-events');
-const EVENTS_COUNT = 5;
 
-const events = new Array(EVENTS_COUNT).fill().map(createEvent).sort((a,b) => b.dueDate - a.dueDate);
-const filters = generateFilter(events);
+const filters = generateFilter(data);
 const boardPresenter = new BoardPresenter(tripEventsSection);
 
 const renderMenu = () => render(tripControlsNavigation, new SiteMenuView(), RenderPosition.BEFOREEND);
@@ -23,4 +21,4 @@ const renderFilters = () => render(tripControlsFilters, new FiltersView(filters)
 renderMenu();
 renderRouteInfo();
 renderFilters();
-boardPresenter.init(events);
+boardPresenter.init(data);
