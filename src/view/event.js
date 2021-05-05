@@ -2,6 +2,10 @@ import {humanizeDateFormat, humanizeTimeFormat} from '../utils/event.js';
 import AbstractView from './abstract.js';
 
 const createOffersTemplate = (offers) => {
+  if (offers === null) {
+    return '';
+  }
+
   return offers.map((item) => {
     return `<li class="event__offer">
         <span class="event__offer-title">${item.title}</span>
@@ -15,7 +19,7 @@ const addToFavourites = (boolean) => {
 };
 
 const createEventTemplate = (event) => {
-  const {type, dueDate, dateFrom, dateTo, duration, id, isFavorite, destination, offers, basePrice} = event;
+  const {dueDate, dateFrom, dateTo, duration, id, isFavorite, destination, basePrice, offer, type} = event;
   const {name} = destination;
 
   const date = humanizeDateFormat(dueDate);
@@ -42,7 +46,7 @@ const createEventTemplate = (event) => {
                 </p>
                 <h4 class="visually-hidden">Offers:</h4>
                 <ul class="event__selected-offers">
-                    ${createOffersTemplate(offers)}
+                    ${createOffersTemplate(offer)}
                 </ul>
                 <button class="${addToFavourites(isFavorite)}" type="button">
                   <span class="visually-hidden">Add to favorite</span>

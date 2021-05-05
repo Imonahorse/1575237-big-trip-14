@@ -33,6 +33,9 @@ class Board {
 
   _sortEvents(sortType) {
     switch (sortType) {
+      case SortType.DAY:
+        this._boardEvents.sort((a, b) => b.dueDate - a.dueDate);
+        break;
       case SortType.TIME:
         this._boardEvents.sort((a, b) => dayjs(b.dateTo - b.dateFrom) - (a.dateTo - a.dateFrom));
         break;
@@ -111,7 +114,7 @@ class Board {
 
     this._renderSorting();
     this._renderEvents();
-    this._renderNewEvent();
+    // this._renderNewEvent();
     this._renderEventsList();
   }
 }
