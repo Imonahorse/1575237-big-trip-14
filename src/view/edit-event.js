@@ -1,7 +1,7 @@
 import {humanizeEditEventDateFormat, humanizeDateFormat} from '../utils/event.js';
 import {offersTypes, destinationTypes} from '../mock/data.js';
 import {TYPES, CITIES} from '../utils/constant.js';
-import SmartView from './Smart.js';
+import SmartView from './smart.js';
 import flatpickr from 'flatpickr';
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
