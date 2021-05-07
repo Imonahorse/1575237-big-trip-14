@@ -1,27 +1,7 @@
 import {calcPrice, generateDate, generateDateFrom, generateDateTo} from '../utils/event.js';
-import {getArrayRandomElement, getRandomInteger} from '../utils/common.js';
+import {getArrayRandomElement, getRandomInteger, msToTime} from '../utils/common.js';
 import {TYPES, CITIES} from '../utils/constant.js';
 import {nanoid} from 'nanoid';
-
-const msToTime = (duration) => {
-  const days = Math.floor(duration / (1000 * 60 * 60 * 24) % 30);
-  const minutes = Math.floor((duration / (1000 * 60)) % 60);
-  const hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
-
-  if (days === 0) {
-    return hours + 'H :' + minutes + 'M';
-  }
-
-  if (hours === 0) {
-    return minutes + 'M';
-  }
-
-  if (minutes === 0) {
-    return hours + 'H';
-  }
-
-  return days + 'D ' + hours + 'H :' + minutes + 'M';
-};
 
 const createEvent = (getOfferTypes, getDestinationTypes) => {
   const dueDate = generateDate();

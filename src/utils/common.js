@@ -27,6 +27,25 @@ const SortType = {
   TIME: 'time',
   PRICE: 'price',
 };
+const msToTime = (duration) => {
+  const days = Math.floor(duration / (1000 * 60 * 60 * 24) % 30);
+  const minutes = Math.floor((duration / (1000 * 60)) % 60);
+  const hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+
+  if (days === 0) {
+    return hours + 'H :' + minutes + 'M';
+  }
+
+  if (hours === 0) {
+    return minutes + 'M';
+  }
+
+  if (minutes === 0) {
+    return hours + 'H';
+  }
+
+  return days + 'D ' + hours + 'H :' + minutes + 'M';
+};
 
 export {
   getArrayRandomElement,
@@ -34,5 +53,6 @@ export {
   getRandomInteger,
   isEscEvent,
   updateItem,
-  SortType
+  SortType,
+  msToTime
 };
