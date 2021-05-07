@@ -329,7 +329,7 @@ class EditEvent extends SmartView {
     }
 
     this.updateData({
-      basePrice: priceValue.length > 0 ? priceValue : baseOfferPrice,
+      basePrice: priceValue ? priceValue : baseOfferPrice,
     });
   }
 
