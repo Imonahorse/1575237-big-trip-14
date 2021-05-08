@@ -20,11 +20,11 @@ const getOfferTypes = () => {
       offers.push({
         title: title,
         price: getArrayRandomElement(OFFERS_PRICE),
-        id: title.toLowerCase().replace(/ /g, '-') + `${id += 1}`,
+        id: title.toLowerCase().replace(/ /g, '-') + `-${id += 1}`,
       });
     }
 
-    offerTypes.set(type, Math.random() > 0.8 ? null : offers);
+    offerTypes.set(type, offers);
   });
 
   return offerTypes;

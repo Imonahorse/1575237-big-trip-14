@@ -13,16 +13,22 @@ const DESCRIPTIONS = [
   'In rutrum ac purus sit amet tempus.',
 ];
 const PHOTOS_MIN_LENGTH = 0;
-const PHOTOS_MAX_LENGTH = 5;
+const PHOTOS_MAX_LENGTH = 10;
 
 const createRandomPicturesArray = () => {
-  return new Array(getRandomInteger(PHOTOS_MIN_LENGTH, PHOTOS_MAX_LENGTH)).fill().map(() => {
-    const image = {
+  const photosContainer = new Set();
+  const photosCount = getRandomInteger(PHOTOS_MIN_LENGTH, PHOTOS_MAX_LENGTH);
+
+  while (photosContainer.size <= photosCount) {
+    const photo = {
       src: `http://picsum.photos/248/152?r=${getRandomInteger(0, 9)}`,
       alt: getArrayRandomElement(DESCRIPTIONS),
     };
-    return image;
-  });
+
+    photosContainer.add(photo);
+  }
+
+  return getRandomArray(Array.from(photosContainer));
 };
 
 const getDestinationTypes = () => {
