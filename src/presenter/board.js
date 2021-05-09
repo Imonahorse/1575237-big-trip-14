@@ -10,10 +10,11 @@ import dayjs from 'dayjs';
 const EMPTY_EVENTS_LIST = 0;
 
 class Board {
-  constructor(boardContainer) {
+  constructor(boardContainer, eventsModel) {
     this._eventPresenter = {};
     this._currentSortType = SortType.DAY;
     this._boardContainer = boardContainer;
+    this._eventsModel = eventsModel;
 
     this._sortComponent = new SortingView();
     this._noEventComponent = new NoEventView();
@@ -29,6 +30,10 @@ class Board {
     this._boardEvents = boardEvents;
     this._sourcedBoardEvents = boardEvents;
     this._renderBoard();
+  }
+
+  _getEvents() {
+    return this._eventsModel.getEvents();
   }
 
   _sortEvents(sortType) {
