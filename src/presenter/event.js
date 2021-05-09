@@ -2,6 +2,7 @@ import EditEventView from '../view/edit-event.js';
 import EventView from '../view/event.js';
 import {render, replace, RenderPosition, remove} from '../utils/render.js';
 import {isEscEvent} from '../utils/common.js';
+import {UserAction, UpdateType} from '../utils/constant.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -103,12 +104,20 @@ class Event {
   }
 
   _handleSubmitEditClick(event) {
-    this._changeData(event);
+    this._changeData(
+      UserAction.UPDATE_EVENT,
+      UpdateType.MINOR,
+      event,
+    );
     this._closeEventEditForm();
   }
 
   _handleFavoriteClick() {
-    this._changeData(Object.assign({}, this._event, {isFavorite: !this._event.isFavorite}));
+    this._changeData(
+      UserAction.UPDATE_EVENT,
+      UpdateType.MINOR,
+      Object.assign({}, this._event, {isFavorite: !this._event.isFavorite}),
+    );
   }
 }
 

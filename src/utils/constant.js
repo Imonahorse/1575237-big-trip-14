@@ -1,4 +1,5 @@
-const TYPES = ['Taxi',
+const TYPES = [
+  'Taxi',
   'Bus',
   'Train',
   'Ship',
@@ -24,5 +25,15 @@ const CITIES = [
   'Kiev',
   'Astana',
 ];
+const UserAction = {
+  UPDATE_EVENT: 'UPDATE_EVENT',
+  ADD_EVENT: 'ADD_EVENT',
+  DELETE_EVENT: 'DELETE_EVENT',
+};
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
 
-export {TYPES, CITIES};
+export {TYPES, CITIES, UserAction, UpdateType};
