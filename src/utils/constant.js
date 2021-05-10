@@ -35,5 +35,10 @@ const UpdateType = {
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
 };
+const FilterType = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PAST: 'past',
+};
 
-export {TYPES, CITIES, UserAction, UpdateType};
+export {TYPES, CITIES, UserAction, UpdateType, FilterType};

@@ -7,16 +7,18 @@ import EventPresenter from './event.js';
 import {SortType} from '../utils/common.js';
 import dayjs from 'dayjs';
 import {UpdateType, UserAction} from '../utils/constant.js';
+import {filter} from '../utils/filter.js';
 
 const EMPTY_EVENTS_LIST = 0;
 
 class Board {
-  constructor(boardContainer, eventsModel) {
+  constructor(boardContainer, eventsModel, filterModel) {
     this._eventPresenter = {};
     this._currentSortType = SortType.DAY;
     this._boardContainer = boardContainer;
     this._eventsModel = eventsModel;
     this._sortComponent = null;
+    this._filterModel = filterModel;
 
     this._noEventComponent = new NoEventView();
     this._newEventComponent = new NewEventView();
@@ -29,6 +31,7 @@ class Board {
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
     this._eventsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
   }
 
   init() {
@@ -36,16 +39,20 @@ class Board {
   }
 
   _getEvents() {
+    const filterType = this._filterModel.getFilter();
+    const events = this._eventsModel.getEvents();
+    const filtredEvents = filter[filterType](events);
+
     switch (this._currentSortType) {
       case SortType.DAY:
-        return this._eventsModel.getEvents().slice().sort((a, b) => b.dueDate - a.dueDate);
+        return filtredEvents.sort((a, b) => b.dueDate - a.dueDate);
       case SortType.TIME:
-        return this._eventsModel.getEvents().slice().sort((a, b) => dayjs(b.dateTo - b.dateFrom) - (a.dateTo - a.dateFrom));
+        return filtredEvents.sort((a, b) => dayjs(b.dateTo - b.dateFrom) - (a.dateTo - a.dateFrom));
       case SortType.PRICE:
-        return this._eventsModel.getEvents().slice().sort((a, b) => b.basePrice - a.basePrice);
+        return filtredEvents.sort((a, b) => b.basePrice - a.basePrice);
     }
 
-    return this._eventsModel.getEvents();
+    return filtredEvents;
   }
 
   _handleSortTypeChange(sortType) {
@@ -116,14 +123,6 @@ class Board {
 
   _renderNewEvent() {
     render(this._eventsListComponent, this._newEventComponent, RenderPosition.AFTERBEGIN);
-  }
-
-  _clearEventsList() {
-    Object
-      .values(this._eventPresenter)
-      .forEach((presenter) => presenter.destroy());
-
-    this._eventPresenter = {};
   }
 
   _clearBoard({resetSortType = false} = {}) {
