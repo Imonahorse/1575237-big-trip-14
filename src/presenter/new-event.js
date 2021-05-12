@@ -56,7 +56,7 @@ class EventNew {
   }
 
   _escKeyDownHandler(evt) {
-    if (isEscEvent) {
+    if (isEscEvent(evt)) {
       evt.preventDefault();
       this.destroy();
     }

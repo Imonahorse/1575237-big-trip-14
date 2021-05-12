@@ -1,6 +1,9 @@
 import dayjs from 'dayjs';
 import {getRandomInteger} from './common.js';
 
+const generateTodaysDate = () => {
+  return dayjs().toDate();
+};
 const generateDate = () => {
   const maxDaysGap = 31;
 
@@ -52,5 +55,6 @@ export {
   isEventComing,
   isEventExpired,
   humanizeEditEventDateFormat,
-  calcPrice
+  calcPrice,
+  generateTodaysDate
 };

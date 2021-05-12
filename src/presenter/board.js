@@ -22,7 +22,6 @@ class Board {
 
     this._noEventComponent = new NoEventView();
     this._eventsListComponent = new EventsListView();
-    this._eventNewPresenter = new EventNewPresenter(this._eventsListComponent, this._handleViewAction);
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -31,6 +30,8 @@ class Board {
 
     this._eventsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
+
+    this._eventNewPresenter = new EventNewPresenter(this._eventsListComponent, this._handleViewAction);
   }
 
   init() {

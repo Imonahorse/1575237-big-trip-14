@@ -1,4 +1,5 @@
-import {humanizeEditEventDateFormat, humanizeDateFormat, calcPrice} from '../utils/event.js';
+import {humanizeEditEventDateFormat, humanizeDateFormat} from '../utils/event.js';
+import {generateTodaysDate} from '../utils/event.js';
 import {offersTypes, destinationTypes} from '../mock/data.js';
 import {msToTime} from '../utils/common.js';
 import {TYPES, CITIES} from '../utils/constant.js';
@@ -6,19 +7,20 @@ import SmartView from './smart.js';
 import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
+const date = generateTodaysDate();
 const BLANK_EVENT = {
-  dueDate: '',
-  dateFrom: '',
-  dateTo: '',
+  dueDate: date,
+  dateFrom: date,
+  dateTo: date,
   duration: '',
   isFavorite: false,
-  type: 'taxi',
+  type: 'Taxi',
   destination: {
-    name: 'London',
+    name: '',
     description: '',
     picture: '',
   },
-  offer: null,
+  offer: [],
   basePrice: 0,
 };
 const createTypesListTemplate = (types, prevTypeState) => {
@@ -30,7 +32,7 @@ const createTypesListTemplate = (types, prevTypeState) => {
   }).join('');
 };
 const createPhotosTemplate = (photos) => {
-  if (photos === null || photos.length === 0) {
+  if (!photos || !photos.length) {
     return '';
   }
 
@@ -39,16 +41,14 @@ const createPhotosTemplate = (photos) => {
   }).join('');
 };
 const createOffersList = (type, offers) => {
-  if (!offers) {
-    return '';
-  }
-
   const offersFromData = offersTypes.get(type);
 
   return offersFromData.map((item) => {
+    const ifChecked = offers.some((offer) => offer.id === item.id);
+
     return `    <div class="event__offer-selector">
                     <input class="event__offer-checkbox  visually-hidden" id=${item.id} type="checkbox" name=${item.id}
-                   ${offers.some((offer) => offer.id === item.id) ? 'checked' : ''}>
+                   ${ifChecked ? 'checked' : ''}>
                     <label class="event__offer-label" for=${item.id}>
                     <span class="event__offer-title">${item.title}</span>
                     &plus;&euro;&nbsp;
@@ -66,7 +66,7 @@ const createOffersTemplate = (type, offers) => {
                   </section>`;
 };
 const createDescriptionTemplate = (pictures, description) => {
-  if (description === null || description.length === 0) {
+  if (!description || !description.length) {
     return '';
   }
 
@@ -195,10 +195,7 @@ class EditEvent extends SmartView {
   _dateToChangeHandler([userDate]) {
     this.updateData({
       dateTo: userDate,
-    });
-
-    this.updateData({
-      duration: msToTime(this._data.dateTo - this._data.dateFrom),
+      duration: msToTime(userDate - this._data.dateFrom),
     });
   }
 
@@ -206,10 +203,7 @@ class EditEvent extends SmartView {
     this.updateData({
       dateFrom: userDate,
       dueDate: humanizeDateFormat(userDate),
-    });
-
-    this.updateData({
-      duration: msToTime(this._data.dateTo - this._data.dateFrom),
+      duration: msToTime(this._data.dateTo - userDate),
     });
   }
 
@@ -271,14 +265,12 @@ class EditEvent extends SmartView {
   _typeToggleHandler(evt) {
     evt.preventDefault();
     const activeType = evt.target.value;
-    const offersForActiveType = offersTypes.get(activeType);
-    const price = calcPrice(offersForActiveType);
+    const offers = [];
 
     this.updateData({
       type: activeType,
-      offer: offersForActiveType,
+      offer: offers,
       prevTypeState: activeType,
-      basePrice: price,
     });
   }
 
@@ -301,9 +293,6 @@ class EditEvent extends SmartView {
         description: destinationContent.descriptions,
         picture: destinationContent.pictures,
       },
-      duration: this._data.duration,
-      hasDescriptionState: destinationContent.descriptions !== null,
-      hasPicturesState: destinationContent.pictures !== null,
     });
   }
 
@@ -314,49 +303,49 @@ class EditEvent extends SmartView {
       return;
     }
 
-    if (!offer.checked) {
-      const uncheckedOffer = this._data.offer.filter((item) => item.id === offer.id);
-      const newOffers = this._data.offer.filter((item) => item.id !== offer.id);
-      const basePrise = this._data.basePrice - calcPrice(uncheckedOffer);
-
-      this.updateData({
-        offer: newOffers,
-        basePrice: basePrise,
-      });
-    }
+    let newOffers = this._data.offer.slice();
 
     if (offer.checked) {
       const offerMap = offersTypes.get(this._data.type);
       const newOffer = offerMap.filter((item) => item.id === offer.id);
-      const newOffers = this._data.offer.concat(...newOffer);
-      const basePrice = this._data.basePrice + calcPrice(newOffer);
-
-      this.updateData({
-        offer: newOffers,
-        basePrice: basePrice,
-      });
+      newOffers.push(...newOffer);
     }
+
+    if (!offer.checked) {
+      newOffers = this._data.offer.filter((item) => item.id !== offer.id);
+    }
+
+    this.updateData({
+      offer: newOffers,
+    });
   }
 
   _priceChangeHandler(evt) {
     evt.preventDefault();
     const price = evt.target;
-    const priceValue = parseInt(price.value);
-    const baseOfferPrice = calcPrice(this._data.offer);
+    const priceValue = parseFloat(price.value);
 
-    if (priceValue < baseOfferPrice) {
-      price.setCustomValidity(`The price cannot be less than ${baseOfferPrice}`);
+    if (isNaN(priceValue) || priceValue < 0) {
+      price.setCustomValidity('The price cannot be empty, less than zero, contain letters or special characters');
       price.reportValidity();
       return;
     }
 
     this.updateData({
-      basePrice: priceValue ? priceValue : baseOfferPrice,
+      basePrice: priceValue,
     });
   }
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
+
+    const destinationInput = this.getElement().querySelector('.event__input--destination');
+
+    if(!this._data.destination.name.length) {
+      destinationInput.setCustomValidity('Choose city');
+      destinationInput.reportValidity();
+      return;
+    }
 
     this._callback.formSubmit(EditEvent.changeStateToEvent(this._data));
   }
