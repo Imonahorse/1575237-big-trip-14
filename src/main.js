@@ -20,6 +20,7 @@ const filterModel = new FilterModel();
 const boardPresenter = new BoardPresenter(tripEventsSection, eventsModel, filterModel);
 const filterPresenter = new FilterPresenter(tripControlsFilters, filterModel, eventsModel);
 
+
 const renderMenu = () => render(tripControlsNavigation, new SiteMenuView(), RenderPosition.BEFOREEND);
 const renderRouteInfo = () => render(tripMain, new RouteInfoView(), RenderPosition.AFTERBEGIN);
 
@@ -27,3 +28,8 @@ renderMenu();
 renderRouteInfo();
 boardPresenter.init();
 filterPresenter.init();
+
+document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
+  evt.preventDefault();
+  boardPresenter.createTask();
+});

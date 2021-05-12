@@ -80,17 +80,17 @@ class Event {
     replace(this._eventComponent, this._eventEditComponent);
   }
 
-  _closeEventEditForm() {
-    this._replaceFormToCard();
-    document.removeEventListener('keydown', this._escKeydownHandler);
-  }
-
   _escKeydownHandler(evt) {
     if (isEscEvent(evt)) {
       evt.preventDefault();
       this._eventEditComponent.reset(this._event);
       this._closeEventEditForm();
     }
+  }
+
+  _closeEventEditForm() {
+    this._replaceFormToCard();
+    document.removeEventListener('keydown', this._escKeydownHandler);
   }
 
   _handleEditClick() {

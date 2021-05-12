@@ -48,7 +48,6 @@ class Filter {
 
   _getFilters() {
     const events = this._eventsModel.getEvents();
-    console.log(filter[FilterType.FUTURE](events))
 
     return [
       {

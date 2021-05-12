@@ -1,13 +1,13 @@
 import SortingView from '../view/sorting-events.js';
 import EventsListView from '../view/events-list.js';
-import NewEventView from '../view/new-event.js';
 import NoEventView from '../view/no-event.js';
 import {render, RenderPosition, remove} from '../utils/render.js';
 import EventPresenter from './event.js';
 import {SortType} from '../utils/common.js';
 import dayjs from 'dayjs';
-import {UpdateType, UserAction} from '../utils/constant.js';
+import {UpdateType, UserAction, FilterType} from '../utils/constant.js';
 import {filter} from '../utils/filter.js';
+import EventNewPresenter from './new-event.js';
 
 const EMPTY_EVENTS_LIST = 0;
 
@@ -21,9 +21,8 @@ class Board {
     this._filterModel = filterModel;
 
     this._noEventComponent = new NoEventView();
-    this._newEventComponent = new NewEventView();
     this._eventsListComponent = new EventsListView();
-
+    this._eventNewPresenter = new EventNewPresenter(this._eventsListComponent, this._handleViewAction);
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -41,18 +40,24 @@ class Board {
   _getEvents() {
     const filterType = this._filterModel.getFilter();
     const events = this._eventsModel.getEvents();
-    const filtredEvents = filter[filterType](events);
+    const filteredEvents = filter[filterType](events);
 
     switch (this._currentSortType) {
       case SortType.DAY:
-        return filtredEvents.sort((a, b) => b.dueDate - a.dueDate);
+        return filteredEvents.slice().sort((a, b) => b.dueDate - a.dueDate);
       case SortType.TIME:
-        return filtredEvents.sort((a, b) => dayjs(b.dateTo - b.dateFrom) - (a.dateTo - a.dateFrom));
+        return filteredEvents.slice().sort((a, b) => dayjs(b.dateTo - b.dateFrom) - (a.dateTo - a.dateFrom));
       case SortType.PRICE:
-        return filtredEvents.sort((a, b) => b.basePrice - a.basePrice);
+        return filteredEvents.slice().sort((a, b) => b.basePrice - a.basePrice);
     }
 
-    return filtredEvents;
+    return filteredEvents;
+  }
+
+  createTask() {
+    this._currentSortType = SortType.DAY;
+    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this._eventNewPresenter.init();
   }
 
   _handleSortTypeChange(sortType) {
@@ -76,6 +81,8 @@ class Board {
   }
 
   _handleModeChange() {
+    this._eventNewPresenter.destroy();
+
     Object
       .values(this._eventPresenter)
       .forEach((presenter) => presenter.resetView());
@@ -90,7 +97,7 @@ class Board {
         this._eventsModel.addEvent(updateType, update);
         break;
       case UserAction.DELETE_EVENT:
-        this._eventsModel.deleteTask(updateType, update);
+        this._eventsModel.deleteEvent(updateType, update);
         break;
     }
   }
@@ -121,11 +128,9 @@ class Board {
     this._getEvents().map((item) => this._renderEvent(item));
   }
 
-  _renderNewEvent() {
-    render(this._eventsListComponent, this._newEventComponent, RenderPosition.AFTERBEGIN);
-  }
-
   _clearBoard({resetSortType = false} = {}) {
+    this._eventNewPresenter.destroy();
+
     Object
       .values(this._eventPresenter)
       .forEach((presenter) => presenter.destroy());
@@ -153,10 +158,9 @@ class Board {
       return;
     }
 
+    this._renderEventsList();
     this._renderSorting();
     this._renderEvents();
-    // this._renderNewEvent();
-    this._renderEventsList();
   }
 }
 

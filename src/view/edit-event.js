@@ -6,6 +6,21 @@ import SmartView from './smart.js';
 import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
+const BLANK_EVENT = {
+  dueDate: '',
+  dateFrom: '',
+  dateTo: '',
+  duration: '',
+  isFavorite: false,
+  type: 'taxi',
+  destination: {
+    name: 'London',
+    description: '',
+    picture: '',
+  },
+  offer: null,
+  basePrice: 0,
+};
 const createTypesListTemplate = (types, prevTypeState) => {
   return types.map((type) => {
     return `<div class="event__type-item">
@@ -24,6 +39,10 @@ const createPhotosTemplate = (photos) => {
   }).join('');
 };
 const createOffersList = (type, offers) => {
+  if (!offers) {
+    return '';
+  }
+
   const offersFromData = offersTypes.get(type);
 
   return offersFromData.map((item) => {
@@ -127,7 +146,7 @@ const createEditEventTemplate = (event) => {
 };
 
 class EditEvent extends SmartView {
-  constructor(event) {
+  constructor(event = BLANK_EVENT) {
     super();
     this._dateFromPicker = null;
     this._dateToPicker = null;
@@ -141,6 +160,7 @@ class EditEvent extends SmartView {
     this._destinationInputHandler = this._destinationInputHandler.bind(this);
     this._offerCheckHandler = this._offerCheckHandler.bind(this);
     this._priceChangeHandler = this._priceChangeHandler.bind(this);
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
 
     this._setInnerHandlers();
     this._setDatepickerDateTo();
@@ -158,6 +178,8 @@ class EditEvent extends SmartView {
   }
 
   static changeEventToState(event) {
+    if (!event) return event;
+
     return Object.assign({}, event, {
       prevTypeState: event.type,
     });
@@ -342,6 +364,16 @@ class EditEvent extends SmartView {
   _editClickHandler(evt) {
     evt.preventDefault();
     this._callback.editClick(EditEvent.changeStateToEvent(this._data));
+  }
+
+  _formDeleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(EditEvent.changeStateToEvent(this._data));
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._formDeleteClickHandler);
   }
 
   setFormSubmitHandler(callback) {
