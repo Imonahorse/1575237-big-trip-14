@@ -24,6 +24,7 @@ class EventNew {
     this._eventEditComponent = new EditEventView();
     this._eventEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._eventEditComponent.setDeleteClickHandler(this._handleDeleteClick);
+    this._eventEditComponent.setEditClickHandler(this._handleDeleteClick);
 
     render(this._eventListContainer, this._eventEditComponent, RenderPosition.AFTERBEGIN);
 

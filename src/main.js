@@ -20,7 +20,6 @@ const filterModel = new FilterModel();
 const boardPresenter = new BoardPresenter(tripEventsSection, eventsModel, filterModel);
 const filterPresenter = new FilterPresenter(tripControlsFilters, filterModel, eventsModel);
 
-
 const renderMenu = () => render(tripControlsNavigation, new SiteMenuView(), RenderPosition.BEFOREEND);
 const renderRouteInfo = () => render(tripMain, new RouteInfoView(), RenderPosition.AFTERBEGIN);
 

@@ -195,15 +195,14 @@ class EditEvent extends SmartView {
   _dateToChangeHandler([userDate]) {
     this.updateData({
       dateTo: userDate,
-      duration: msToTime(userDate - this._data.dateFrom),
     });
   }
 
   _dateFromChangeHandler([userDate]) {
     this.updateData({
-      dateFrom: userDate,
       dueDate: humanizeDateFormat(userDate),
-      duration: msToTime(this._data.dateTo - userDate),
+      dateFrom: userDate,
+      dateTo: this._data.dateTo < userDate ? userDate : this._data.dateTo,
     });
   }
 
@@ -219,7 +218,7 @@ class EditEvent extends SmartView {
         {
           enableTime: true,
           dateFormat: 'd/m/y H:i',
-          defaultDate: humanizeEditEventDateFormat(this._data.dateTo),
+          defaultDate: this._data.dateTo.$d,
           minDate: humanizeEditEventDateFormat(this._data.dateFrom),
           onClose: this._dateToChangeHandler,
         },
@@ -239,8 +238,7 @@ class EditEvent extends SmartView {
         {
           enableTime: true,
           dateFormat: 'd/m/y H:i',
-          maxDate: humanizeEditEventDateFormat(this._data.dateTo),
-          defaultDate: humanizeEditEventDateFormat(this._data.dateFrom),
+          defaultDate: this._data.dateFrom.$d,
           onClose: this._dateFromChangeHandler,
         },
       );
@@ -325,7 +323,7 @@ class EditEvent extends SmartView {
     const price = evt.target;
     const priceValue = parseFloat(price.value);
 
-    if (isNaN(priceValue) || priceValue < 0) {
+    if (isNaN(priceValue) || priceValue <= 0) {
       price.setCustomValidity('The price cannot be empty, less than zero, contain letters or special characters');
       price.reportValidity();
       return;
@@ -341,11 +339,15 @@ class EditEvent extends SmartView {
 
     const destinationInput = this.getElement().querySelector('.event__input--destination');
 
-    if(!this._data.destination.name.length) {
+    if (!this._data.destination.name.length) {
       destinationInput.setCustomValidity('Choose city');
       destinationInput.reportValidity();
       return;
     }
+
+    this.updateData({
+      duration: msToTime(this._data.dateTo - this._data.dateFrom),
+    });
 
     this._callback.formSubmit(EditEvent.changeStateToEvent(this._data));
   }

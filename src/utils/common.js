@@ -19,19 +19,19 @@ const msToTime = (duration) => {
   const minutes = Math.floor((duration / (1000 * 60)) % 60);
   const hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
 
-  if (days === 0) {
-    return hours + 'H :' + minutes + 'M';
+  if (days === 0 && hours === 0 && minutes === 0) {
+    return '';
   }
 
-  if (hours === 0) {
+  if (days === 0 && hours === 0) {
     return minutes + 'M';
   }
 
-  if (minutes === 0) {
-    return hours + 'H';
+  if (days === 0) {
+    return hours + 'H ' + minutes + 'M';
   }
 
-  return days + 'D ' + hours + 'H :' + minutes + 'M';
+  return days + 'D ' + hours + 'H ' + minutes + 'M';
 };
 
 export {

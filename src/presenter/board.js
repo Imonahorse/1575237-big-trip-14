@@ -146,7 +146,7 @@ class Board {
   }
 
   _renderNoEvents() {
-    render(this._boardContainer, this._noEventComponent, RenderPosition.AFTERBEGIN);
+    render(this._boardContainer, this._noEventComponent, RenderPosition.BEFOREEND);
   }
 
   _renderEventsList() {

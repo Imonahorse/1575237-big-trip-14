@@ -2,7 +2,7 @@ import {createEvent} from './event.js';
 import {getOfferTypes} from './offer.js';
 import {getDestinationTypes} from './destination.js';
 
-const EVENTS_COUNT = 1;
+const EVENTS_COUNT = 10;
 
 const offersTypes = getOfferTypes();
 const destinationTypes = getDestinationTypes();

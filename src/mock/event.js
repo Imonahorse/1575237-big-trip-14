@@ -7,7 +7,7 @@ const createEvent = (getOfferTypes, getDestinationTypes) => {
   const dueDate = generateDate();
   const dateFrom = generateDateFrom(dueDate);
   const dateTo = generateDateTo(dateFrom);
-  const duration = msToTime(dateTo.diff(dateFrom));
+  const duration = msToTime(dateTo - dateFrom);
   const offerTypes = getOfferTypes;
   const destinationTypes = getDestinationTypes;
 
