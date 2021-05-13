@@ -15,6 +15,7 @@ const createRouteInfoTemplate = () => {
 };
 
 class RouteInfo extends AbstractView {
+
   getTemplate() {
     return createRouteInfoTemplate();
   }

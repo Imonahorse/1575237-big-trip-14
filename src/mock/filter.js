@@ -1,4 +1,4 @@
-import {isEventComing, isEventExpired} from './utils/event.js';
+import {isEventComing, isEventExpired} from '../utils/event.js';
 
 const eventToFilterMap = {
   everything: (events) => events.filter((event) => event.dueDate).length,

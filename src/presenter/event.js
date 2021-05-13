@@ -1,7 +1,9 @@
 import EditEventView from '../view/edit-event.js';
 import EventView from '../view/event.js';
+import {isDatesEqual} from '../utils/event.js';
 import {render, replace, RenderPosition, remove} from '../utils/render.js';
 import {isEscEvent} from '../utils/common.js';
+import {UserAction, UpdateType} from '../utils/constant.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -22,6 +24,7 @@ class Event {
     this._escKeydownHandler = this._escKeydownHandler.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleSubmitEditClick = this._handleSubmitEditClick.bind(this);
+    this._handleDeleteEditClick = this._handleDeleteEditClick.bind(this);
   }
 
   init(event) {
@@ -37,6 +40,7 @@ class Event {
     this._eventComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._eventEditComponent.setEditClickHandler(this._handleCloseEditClick);
     this._eventEditComponent.setFormSubmitHandler(this._handleSubmitEditClick);
+    this._eventEditComponent.setDeleteClickHandler(this._handleDeleteEditClick);
 
     if (prevComponent === null || prevEditComponent === null) {
       render(this._eventListComponent, this._eventComponent, RenderPosition.BEFOREEND);
@@ -79,17 +83,17 @@ class Event {
     replace(this._eventComponent, this._eventEditComponent);
   }
 
-  _closeEventEditForm() {
-    this._replaceFormToCard();
-    document.removeEventListener('keydown', this._escKeydownHandler);
-  }
-
   _escKeydownHandler(evt) {
     if (isEscEvent(evt)) {
       evt.preventDefault();
       this._eventEditComponent.reset(this._event);
       this._closeEventEditForm();
     }
+  }
+
+  _closeEventEditForm() {
+    this._replaceFormToCard();
+    document.removeEventListener('keydown', this._escKeydownHandler);
   }
 
   _handleEditClick() {
@@ -103,12 +107,30 @@ class Event {
   }
 
   _handleSubmitEditClick(event) {
-    this._changeData(event);
+    const isMinorUpdate = !isDatesEqual(this._event.dueDate, event.dueDate);
+
+    this._changeData(
+      UserAction.UPDATE_EVENT,
+      isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+      event,
+    );
     this._closeEventEditForm();
   }
 
   _handleFavoriteClick() {
-    this._changeData(Object.assign({}, this._event, {isFavorite: !this._event.isFavorite}));
+    this._changeData(
+      UserAction.UPDATE_EVENT,
+      UpdateType.MINOR,
+      Object.assign({}, this._event, {isFavorite: !this._event.isFavorite}),
+    );
+  }
+
+  _handleDeleteEditClick(event) {
+    this._changeData(
+      UserAction.DELETE_EVENT,
+      UpdateType.MAJOR,
+      event,
+    );
   }
 }
 

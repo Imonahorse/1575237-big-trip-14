@@ -5,10 +5,10 @@ const RenderPosition = {
   BEFOREEND: 'beforeend',
 };
 const render = (container, element, place) => {
-  if(container instanceof Abstract) {
+  if (container instanceof Abstract) {
     container = container.getElement();
   }
-  if(element instanceof Abstract) {
+  if (element instanceof Abstract) {
     element = element.getElement();
   }
 
@@ -45,6 +45,10 @@ const replace = (newChild, oldChild) => {
   parent.replaceChild(newChild, oldChild);
 };
 const remove = (component) => {
+  if (component === null) {
+    return;
+  }
+
   if (!(component instanceof Abstract)) {
     throw new Error('Can remove only components');
   }

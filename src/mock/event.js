@@ -1,5 +1,5 @@
-import {calcPrice, generateDate, generateDateFrom, generateDateTo} from '../utils/event.js';
-import {getArrayRandomElement, getRandomInteger, msToTime} from '../utils/common.js';
+import {generateDate, generateDateFrom, generateDateTo} from '../utils/event.js';
+import {getArrayRandomElement, getRandomArray, getRandomInteger, msToTime} from '../utils/common.js';
 import {TYPES, CITIES} from '../utils/constant.js';
 import {nanoid} from 'nanoid';
 
@@ -7,7 +7,7 @@ const createEvent = (getOfferTypes, getDestinationTypes) => {
   const dueDate = generateDate();
   const dateFrom = generateDateFrom(dueDate);
   const dateTo = generateDateTo(dateFrom);
-  const duration = msToTime(dateTo.diff(dateFrom));
+  const duration = msToTime(dateTo - dateFrom);
   const offerTypes = getOfferTypes;
   const destinationTypes = getDestinationTypes;
 
@@ -22,14 +22,14 @@ const createEvent = (getOfferTypes, getDestinationTypes) => {
     destination: {
       name: getArrayRandomElement(CITIES),
     },
+    basePrice: getRandomInteger(0, 1000),
   };
 
   const offers = offerTypes.get(event.type);
   const destination = destinationTypes.get(event.destination.name);
-  event.offer = offers;
+  event.offer = getRandomArray(offers);
   event.destination.description = destination.descriptions;
   event.destination.picture = destination.pictures;
-  event.basePrice = offers ? calcPrice(offers) : 0;
 
   return event;
 };
