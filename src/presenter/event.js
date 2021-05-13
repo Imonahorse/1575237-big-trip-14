@@ -1,5 +1,6 @@
 import EditEventView from '../view/edit-event.js';
 import EventView from '../view/event.js';
+import {isDatesEqual} from '../utils/event.js';
 import {render, replace, RenderPosition, remove} from '../utils/render.js';
 import {isEscEvent} from '../utils/common.js';
 import {UserAction, UpdateType} from '../utils/constant.js';
@@ -106,9 +107,11 @@ class Event {
   }
 
   _handleSubmitEditClick(event) {
+    const isMinorUpdate = !isDatesEqual(this._event.dueDate, event.dueDate);
+
     this._changeData(
       UserAction.UPDATE_EVENT,
-      UpdateType.MINOR,
+      isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
       event,
     );
     this._closeEventEditForm();

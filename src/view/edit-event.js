@@ -21,7 +21,7 @@ const BLANK_EVENT = {
     picture: '',
   },
   offer: [],
-  basePrice: 0,
+  basePrice: '',
 };
 const createTypesListTemplate = (types, prevTypeState) => {
   return types.map((type) => {
@@ -128,7 +128,7 @@ const createEditEventTemplate = (event) => {
                       <span class="visually-hidden">Price</span>
                       &euro;
                     </label>
-                    <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
+                    <input class="event__input  event__input--price" id="event-price-1" type="number" min="1" name="event-price" value="${basePrice}">
                   </div>
                   <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
                   <button class="event__reset-btn" type="reset">Delete</button>
@@ -320,17 +320,9 @@ class EditEvent extends SmartView {
 
   _priceChangeHandler(evt) {
     evt.preventDefault();
-    const price = evt.target;
-    const priceValue = parseFloat(price.value);
-
-    if (isNaN(priceValue) || priceValue <= 0) {
-      price.setCustomValidity('The price cannot be empty, less than zero, contain letters or special characters');
-      price.reportValidity();
-      return;
-    }
 
     this.updateData({
-      basePrice: priceValue,
+      basePrice: evt.target.value,
     });
   }
 
@@ -338,10 +330,15 @@ class EditEvent extends SmartView {
     evt.preventDefault();
 
     const destinationInput = this.getElement().querySelector('.event__input--destination');
+    const priceInput = this.getElement().querySelector('.event__input--price');
 
     if (!this._data.destination.name.length) {
       destinationInput.setCustomValidity('Choose city');
-      destinationInput.reportValidity();
+      return;
+    }
+
+    if (!this._data.basePrice) {
+      priceInput.setCustomValidity('Enter the price');
       return;
     }
 

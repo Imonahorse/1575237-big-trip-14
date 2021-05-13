@@ -29,6 +29,15 @@ class Smart extends Abstract {
   restoreHandlers() {
     throw new Error('Abstract method not implemented: resetHandlers');
   }
+
+  removeElement() {
+    super.removeElement();
+
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
+  }
 }
 
 export default Smart;

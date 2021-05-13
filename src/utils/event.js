@@ -40,10 +40,8 @@ const isEventComing = (event) => {
 const isEventExpired = (event) => {
   return dayjs().isBefore(event, 'D');
 };
-const calcPrice = (offers) => {
-  let price = 0;
-  offers.forEach((item) => price += item.price);
-  return price;
+const isDatesEqual = (dateA, dateB) => {
+  return (dateA === null && dateB === null) ? true : dayjs(dateA).isSame(dateB, 'D');
 };
 
 export {
@@ -55,6 +53,6 @@ export {
   isEventComing,
   isEventExpired,
   humanizeEditEventDateFormat,
-  calcPrice,
+  isDatesEqual,
   generateTodaysDate
 };
