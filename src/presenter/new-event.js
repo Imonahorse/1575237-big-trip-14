@@ -1,13 +1,13 @@
 import EditEventView from '../view/edit-event.js';
-import {nanoid} from 'nanoid';
-import {remove, render, RenderPosition} from '../utils/render.js';
-import {UserAction, UpdateType} from '../utils/constant.js';
+import {remove, render} from '../utils/render.js';
+import {UserAction, UpdateType, Mode, RenderPosition} from '../utils/constant.js';
 import {isEscEvent} from '../utils/common.js';
 
 class EventNew {
   constructor(eventListContainer, changeData) {
     this._eventListContainer = eventListContainer;
     this._changeData = changeData;
+    this._mode = Mode.ADDING;
 
     this._eventEditComponent = null;
 
@@ -24,7 +24,6 @@ class EventNew {
     this._eventEditComponent = new EditEventView();
     this._eventEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._eventEditComponent.setDeleteClickHandler(this._handleDeleteClick);
-    this._eventEditComponent.setEditClickHandler(this._handleDeleteClick);
 
     render(this._eventListContainer, this._eventEditComponent, RenderPosition.AFTERBEGIN);
 
@@ -42,14 +41,31 @@ class EventNew {
     document.removeEventListener('keydown', this._escKeyDownHandler);
   }
 
+  setSaving() {
+    this._eventEditComponent.updateData({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this._eventEditComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this._eventEditComponent.shake(resetFormState);
+  }
+
   _handleFormSubmit(event) {
     this._changeData(
       UserAction.ADD_EVENT,
       UpdateType.MINOR,
-      Object.assign({}, event, {id: nanoid()}),
+      event,
     );
-
-    this.destroy();
   }
 
   _handleDeleteClick() {

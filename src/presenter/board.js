@@ -1,27 +1,29 @@
 import SortingView from '../view/sorting-events.js';
 import EventsListView from '../view/events-list.js';
 import NoEventView from '../view/no-event.js';
-import {render, RenderPosition, remove} from '../utils/render.js';
+import {render, remove} from '../utils/render.js';
 import EventPresenter from './event.js';
-import {SortType} from '../utils/common.js';
-import dayjs from 'dayjs';
-import {UpdateType, UserAction, FilterType} from '../utils/constant.js';
+import {UpdateType, UserAction, FilterType, SortType, RenderPosition, State as TaskPresenterViewState} from '../utils/constant.js';
 import {filter} from '../utils/filter.js';
 import EventNewPresenter from './new-event.js';
+import LoadingView from '../view/loading.js';
 
 const EMPTY_EVENTS_LIST = 0;
 
 class Board {
-  constructor(boardContainer, eventsModel, filterModel) {
+  constructor(boardContainer, eventsModel, filterModel, api) {
     this._eventPresenter = {};
     this._currentSortType = SortType.DAY;
     this._boardContainer = boardContainer;
     this._eventsModel = eventsModel;
     this._sortComponent = null;
     this._filterModel = filterModel;
+    this._isLoading = true;
+    this._api = api;
 
     this._noEventComponent = new NoEventView();
     this._eventsListComponent = new EventsListView();
+    this._loadingComponent = new LoadingView();
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -45,9 +47,9 @@ class Board {
 
     switch (this._currentSortType) {
       case SortType.DAY:
-        return filteredEvents.slice().sort((a, b) => b.dueDate - a.dueDate);
+        return filteredEvents.slice().sort((a, b) => b.dateTo - a.dateTo);
       case SortType.TIME:
-        return filteredEvents.slice().sort((a, b) => dayjs(b.dateTo - b.dateFrom) - (a.dateTo - a.dateFrom));
+        return filteredEvents.slice().sort((a, b) => (b.dateTo - b.dateFrom) - (a.dateTo - a.dateFrom));
       case SortType.PRICE:
         return filteredEvents.slice().sort((a, b) => b.basePrice - a.basePrice);
     }
@@ -55,7 +57,7 @@ class Board {
     return filteredEvents;
   }
 
-  createTask() {
+  createEvent() {
     this._currentSortType = SortType.DAY;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this._eventNewPresenter.init();
@@ -92,13 +94,22 @@ class Board {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_EVENT:
-        this._eventsModel.updateEvent(updateType, update);
+        this._eventPresenter[update.id].setViewState(TaskPresenterViewState.SAVING);
+        this._api.updateEvent(update)
+          .then((response) => this._eventsModel.updateEvent(updateType, response))
+          .catch(() => this._eventPresenter[update.id].setViewState(TaskPresenterViewState.ABORTING));
         break;
       case UserAction.ADD_EVENT:
-        this._eventsModel.addEvent(updateType, update);
+        this._eventNewPresenter.setSaving();
+        this._api.addEvent(update)
+          .then((response) => this._eventsModel.addEvent(updateType, response))
+          .catch(() => this._eventNewPresenter.setAborting());
         break;
       case UserAction.DELETE_EVENT:
-        this._eventsModel.deleteEvent(updateType, update);
+        this._eventPresenter[update.id].setViewState(TaskPresenterViewState.DELETING);
+        this._api.deleteEvent(update)
+          .then(() => this._eventsModel.deleteEvent(updateType, update))
+          .catch(() => this._eventPresenter[update.id].setViewState(TaskPresenterViewState.ABORTING));
         break;
     }
   }
@@ -114,6 +125,11 @@ class Board {
         break;
       case UpdateType.MAJOR:
         this._clearBoard({resetSortType: true});
+        this._renderBoard();
+        break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loadingComponent);
         this._renderBoard();
         break;
     }
@@ -149,11 +165,20 @@ class Board {
     render(this._boardContainer, this._noEventComponent, RenderPosition.BEFOREEND);
   }
 
+  _renderLoading() {
+    render(this._boardContainer, this._loadingComponent, RenderPosition.AFTERBEGIN);
+  }
+
   _renderEventsList() {
     render(this._boardContainer, this._eventsListComponent, RenderPosition.BEFOREEND);
   }
 
   _renderBoard() {
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
+
     if (this._getEvents().length === EMPTY_EVENTS_LIST) {
       this._renderNoEvents();
       return;

@@ -1,14 +1,9 @@
 import EditEventView from '../view/edit-event.js';
 import EventView from '../view/event.js';
 import {isDatesEqual} from '../utils/event.js';
-import {render, replace, RenderPosition, remove} from '../utils/render.js';
+import {render, replace, remove} from '../utils/render.js';
 import {isEscEvent} from '../utils/common.js';
-import {UserAction, UpdateType} from '../utils/constant.js';
-
-const Mode = {
-  DEFAULT: 'DEFAULT',
-  EDITING: 'EDITING',
-};
+import {UserAction, UpdateType, Mode, RenderPosition, State} from '../utils/constant.js';
 
 class Event {
   constructor(eventListComponent, changeData, changeMode) {
@@ -52,7 +47,8 @@ class Event {
     }
 
     if (this._mode === Mode.EDITING) {
-      replace(this._eventEditComponent, prevEditComponent);
+      replace(this._eventComponent, prevEditComponent);
+      this._mode = Mode.DEFAULT;
     }
 
     remove(prevComponent);
@@ -67,6 +63,35 @@ class Event {
   resetView() {
     if (this._mode !== Mode.DEFAULT) {
       this._replaceFormToCard();
+    }
+  }
+
+  setViewState(state) {
+    const resetFormState = () => {
+      this._eventEditComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    switch (state) {
+      case State.SAVING:
+        this._eventEditComponent.updateData({
+          isDisabled: true,
+          isSaving: true,
+        });
+        break;
+      case State.DELETING:
+        this._eventEditComponent.updateData({
+          isDisabled: true,
+          isDeleting: true,
+        });
+        break;
+      case State.ABORTING:
+        this._eventComponent.shake(resetFormState);
+        this._eventEditComponent.shake(resetFormState);
+        break;
     }
   }
 
@@ -107,14 +132,13 @@ class Event {
   }
 
   _handleSubmitEditClick(event) {
-    const isMinorUpdate = !isDatesEqual(this._event.dueDate, event.dueDate);
+    const isMinorUpdate = !isDatesEqual(this._event.dateTo, event.dateTo);
 
     this._changeData(
       UserAction.UPDATE_EVENT,
       isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
       event,
     );
-    this._closeEventEditForm();
   }
 
   _handleFavoriteClick() {

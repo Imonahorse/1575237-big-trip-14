@@ -17,26 +17,22 @@ class Smart extends Abstract {
     this.restoreHandlers();
   }
 
-  updateData(update) {
+  updateData(update, justStateUpdating) {
     if (!update) {
       return;
     }
 
     this._data = Object.assign({}, this._data, update);
+
+    if (justStateUpdating) {
+      return;
+    }
+
     this.updateElement();
   }
 
   restoreHandlers() {
     throw new Error('Abstract method not implemented: resetHandlers');
-  }
-
-  removeElement() {
-    super.removeElement();
-
-    if (this._datepicker) {
-      this._datepicker.destroy();
-      this._datepicker = null;
-    }
   }
 }
 
