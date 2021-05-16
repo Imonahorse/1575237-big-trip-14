@@ -88,13 +88,13 @@ const createDescriptionTemplate = (pictures, description) => {
 };
 const createDataListTemplate = (cities) => {
   return `<datalist id="destination-list-1">
-            ${cities.map((city) => `<option value=${city.name}></option>`).join('')}
+            ${cities.map((city) => `<option value="${city.name}"></option>`).join('')}
                     </datalist>`;
 };
 
 const createEditEventTemplate = (event) => {
   const {dateFrom, dateTo, id, destination, basePrice, offers, type, prevTypeState, isSaving, isDisabled, isDeleting} = event;
-  const {name, description, picture} = destination;
+  const {name, description, pictures} = destination;
   const types = [];
   offersData.getOffers().forEach((type) => types.push(type.type));
   const timeStart = humanizeEditEventDateFormat(dateFrom);
@@ -145,7 +145,7 @@ const createEditEventTemplate = (event) => {
                 </header>
                 <section class="event__details">
                         ${createOffersTemplate(type, offers, isDisabled)}
-                        ${createDescriptionTemplate(picture, description)}
+                        ${createDescriptionTemplate(pictures, description)}
                   </section>
                 </section>
               </form>
@@ -262,6 +262,7 @@ class EditEvent extends SmartView {
     this._setInnerHandlers();
     this.setEditClickHandler(this._callback.editClick);
     this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setDeleteClickHandler(this._callback.deleteClick);
     this._setDatepickerDateTo();
     this._setDatepickerDateFrom();
   }

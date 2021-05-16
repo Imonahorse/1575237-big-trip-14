@@ -19,11 +19,11 @@ const msToTime = (duration) => {
   }
 
   if (days === 0 && hours === 0) {
-    return minutes < 10 ? '0' + minutes + 'M' : minutes + 'M';
+    return '00D ' + '00H' + minutes < 10 ? '0' + minutes + 'M' : minutes + 'M';
   }
 
   if (days === 0) {
-    return (hours < 10 ? '0' + hours + 'H ' : hours + 'H ') + (minutes < 10 ? '0' + minutes + 'M ' : minutes + 'M ');
+    return '00D ' + (hours < 10 ? '0' + hours + 'H ' : hours + 'H ') + (minutes < 10 ? '0' + minutes + 'M ' : minutes + 'M ');
   }
 
   return (days < 10 ? '0' + days + 'D ' : days + 'D ') + (hours < 10 ? '0' + hours + 'H ' : hours + 'H ') + (minutes < 10 ? '0' + minutes + 'M ' : minutes + 'M ');
