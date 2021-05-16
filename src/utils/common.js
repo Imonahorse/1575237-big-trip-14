@@ -9,29 +9,24 @@ const getRandomArray = (array) => {
   return array.filter(() => Math.random() > 0.5);
 };
 const isEscEvent = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
-const SortType = {
-  DAY: 'day',
-  TIME: 'time',
-  PRICE: 'price',
-};
 const msToTime = (duration) => {
   const days = Math.floor(duration / (1000 * 60 * 60 * 24) % 30);
   const minutes = Math.floor((duration / (1000 * 60)) % 60);
   const hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
 
   if (days === 0 && hours === 0 && minutes === 0) {
-    return '';
+    return '00D 00H 00M';
   }
 
   if (days === 0 && hours === 0) {
-    return minutes + 'M';
+    return minutes < 10 ? '0' + minutes + 'M' : minutes + 'M';
   }
 
   if (days === 0) {
-    return hours + 'H ' + minutes + 'M';
+    return (hours < 10 ? '0' + hours + 'H ' : hours + 'H ') + (minutes < 10 ? '0' + minutes + 'M ' : minutes + 'M ');
   }
 
-  return days + 'D ' + hours + 'H ' + minutes + 'M';
+  return (days < 10 ? '0' + days + 'D ' : days + 'D ') + (hours < 10 ? '0' + hours + 'H ' : hours + 'H ') + (minutes < 10 ? '0' + minutes + 'M ' : minutes + 'M ');
 };
 
 export {
@@ -39,6 +34,5 @@ export {
   getRandomArray,
   getRandomInteger,
   isEscEvent,
-  SortType,
   msToTime
 };

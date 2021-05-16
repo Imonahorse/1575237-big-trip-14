@@ -1,5 +1,6 @@
 import {humanizeDateFormat, humanizeTimeFormat} from '../utils/event.js';
 import AbstractView from './abstract.js';
+import {msToTime} from '../utils/common.js';
 
 const createOffersTemplate = (offers) => {
   if (offers === null) {
@@ -19,12 +20,14 @@ const addToFavourites = (boolean) => {
 };
 
 const createEventTemplate = (event) => {
-  const {dueDate, dateFrom, dateTo, duration, id, isFavorite, destination, basePrice, offer, type} = event;
+  const {dateFrom, dateTo, id, isFavorite, destination, basePrice, offers, type} = event;
   const {name} = destination;
 
-  const date = humanizeDateFormat(dueDate);
+  const date = humanizeDateFormat(dateFrom);
   const timeStart = humanizeTimeFormat(dateFrom);
   const timeEnd = humanizeTimeFormat(dateTo);
+
+  const duration = msToTime(new Date(dateTo) - new Date(dateFrom));
 
   return `<li class="trip-events__item" id="${id}">
               <div class="event">
@@ -46,7 +49,7 @@ const createEventTemplate = (event) => {
                 </p>
                 <h4 class="visually-hidden">Offers:</h4>
                 <ul class="event__selected-offers">
-                    ${createOffersTemplate(offer)}
+                    ${createOffersTemplate(offers)}
                 </ul>
                 <button class="${addToFavourites(isFavorite)}" type="button">
                   <span class="visually-hidden">Add to favorite</span>

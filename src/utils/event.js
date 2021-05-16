@@ -1,9 +1,6 @@
 import dayjs from 'dayjs';
 import {getRandomInteger} from './common.js';
 
-const generateTodaysDate = () => {
-  return dayjs().toDate();
-};
 const generateDate = () => {
   const maxDaysGap = 31;
 
@@ -35,10 +32,11 @@ const humanizeEditEventDateFormat = (date) => {
   return dayjs(date).format('DD/MM/YY HH:mm');
 };
 const isEventComing = (event) => {
-  return dayjs().isAfter(event, 'D');
+  return dayjs().isBefore(event, 'D');
+
 };
 const isEventExpired = (event) => {
-  return dayjs().isBefore(event, 'D');
+  return dayjs().isAfter(event, 'D');
 };
 const isDatesEqual = (dateA, dateB) => {
   return (dateA === null && dateB === null) ? true : dayjs(dateA).isSame(dateB, 'D');
@@ -53,6 +51,5 @@ export {
   isEventComing,
   isEventExpired,
   humanizeEditEventDateFormat,
-  isDatesEqual,
-  generateTodaysDate
+  isDatesEqual
 };

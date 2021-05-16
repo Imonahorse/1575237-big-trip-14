@@ -1,9 +1,6 @@
 import Abstract from '../view/abstract.js';
+import {RenderPosition} from './constant.js';
 
-const RenderPosition = {
-  AFTERBEGIN: 'afterbegin',
-  BEFOREEND: 'beforeend',
-};
 const render = (container, element, place) => {
   if (container instanceof Abstract) {
     container = container.getElement();
@@ -58,7 +55,6 @@ const remove = (component) => {
 };
 
 export {
-  RenderPosition,
   render,
   createElement,
   replace,
