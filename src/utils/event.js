@@ -32,11 +32,11 @@ const humanizeEditEventDateFormat = (date) => {
   return dayjs(date).format('DD/MM/YY HH:mm');
 };
 const isEventComing = (event) => {
-  return dayjs().isBefore(event, 'D');
+  return dayjs().isBefore(event);
 
 };
 const isEventExpired = (event) => {
-  return dayjs().isAfter(event, 'D');
+  return dayjs().isAfter(event);
 };
 const isDatesEqual = (dateA, dateB) => {
   return (dateA === null && dateB === null) ? true : dayjs(dateA).isSame(dateB, 'D');

@@ -28,14 +28,6 @@ class SiteMenu extends AbstractView {
     this._callback.menuClick = callback;
     this.getElement().addEventListener('click', this._menuClickHandler);
   }
-
-  setMenuItem(menuItem) {
-    const item = this.getElement().querySelectorAll(`[data-menu-type ="${menuItem}"`);
-
-    if (!item.classList.contains('.trip-tabs__btn--active')) {
-      item.classList.add('.trip-tabs__btn--active');
-    }
-  }
 }
 
 export default SiteMenu;

@@ -66,16 +66,19 @@ class EventNew {
       UpdateType.MINOR,
       event,
     );
+    document.querySelector('.trip-main__event-add-btn').disabled = false;
   }
 
   _handleDeleteClick() {
     this.destroy();
+    document.querySelector('.trip-main__event-add-btn').disabled = false;
   }
 
   _escKeyDownHandler(evt) {
     if (isEscEvent(evt)) {
       evt.preventDefault();
       this.destroy();
+      document.querySelector('.trip-main__event-add-btn').disabled = false;
     }
   }
 }
