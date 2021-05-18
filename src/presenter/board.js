@@ -3,7 +3,7 @@ import EventsListView from '../view/events-list.js';
 import NoEventView from '../view/no-event.js';
 import {render, remove} from '../utils/render.js';
 import EventPresenter from './event.js';
-import {UpdateType, UserAction, SortType, RenderPosition, State as TaskPresenterViewState} from '../utils/constant.js';
+import {FilterType, UpdateType, UserAction, SortType, RenderPosition, State as TaskPresenterViewState} from '../utils/constant.js';
 import {filter} from '../utils/filter.js';
 import EventNewPresenter from './new-event.js';
 import LoadingView from '../view/loading.js';

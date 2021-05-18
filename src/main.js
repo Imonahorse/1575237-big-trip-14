@@ -55,6 +55,7 @@ Promise.all([api.getEvents(), api.getDestinations(), api.getOffers()])
 
           tableButton.classList.add('trip-tabs__btn--active');
           statisticsButton.classList.remove('trip-tabs__btn--active');
+
           document.querySelector('.trip-main__event-add-btn').disabled = false;
           document.querySelectorAll('.page-body__container').forEach((item) => {
             item.classList.remove('page-body__container--no-after');
@@ -71,6 +72,7 @@ Promise.all([api.getEvents(), api.getDestinations(), api.getOffers()])
 
           statisticsButton.classList.add('trip-tabs__btn--active');
           tableButton.classList.remove('trip-tabs__btn--active');
+
           document.querySelector('.trip-main__event-add-btn').disabled = true;
           document.querySelectorAll('.page-body__container').forEach((item) => {
             item.classList.add('page-body__container--no-after');
