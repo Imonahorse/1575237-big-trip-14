@@ -60,5 +60,9 @@ const State = {
   DELETING: 'DELETING',
   ABORTING: 'ABORTING',
 };
+const MenuItem = {
+  TABLE: 'TABLE',
+  STATISTICS: 'STATISTICS',
+};
 
-export {TYPES, CITIES, UserAction, UpdateType, FilterType, Mode, SortType, RenderPosition, State};
+export {TYPES, CITIES, UserAction, UpdateType, FilterType, Mode, SortType, RenderPosition, State, MenuItem};
