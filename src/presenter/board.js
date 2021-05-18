@@ -3,7 +3,7 @@ import EventsListView from '../view/events-list.js';
 import NoEventView from '../view/no-event.js';
 import {render, remove} from '../utils/render.js';
 import EventPresenter from './event.js';
-import {UpdateType, UserAction, FilterType, SortType, RenderPosition, State as TaskPresenterViewState} from '../utils/constant.js';
+import {FilterType, UpdateType, UserAction, SortType, RenderPosition, State as TaskPresenterViewState} from '../utils/constant.js';
 import {filter} from '../utils/filter.js';
 import EventNewPresenter from './new-event.js';
 import LoadingView from '../view/loading.js';
@@ -30,14 +30,23 @@ class Board {
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
-    this._eventsModel.addObserver(this._handleModelEvent);
-    this._filterModel.addObserver(this._handleModelEvent);
-
     this._eventNewPresenter = new EventNewPresenter(this._eventsListComponent, this._handleViewAction);
   }
 
   init() {
+    this._eventsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
+
     this._renderBoard();
+  }
+
+  destroy() {
+    this._clearBoard({resetSortType: true});
+
+    remove(this._eventsListComponent);
+
+    this._eventsModel.removeObserver(this._handleModelEvent);
+    this._filterModel.removeObserver(this._handleModelEvent);
   }
 
   _getEvents() {

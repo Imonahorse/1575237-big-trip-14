@@ -23,10 +23,10 @@ const msToTime = (duration) => {
   }
 
   if (days === 0) {
-    return '00D ' + (hours < 10 ? '0' + hours + 'H ' : hours + 'H ') + (minutes < 10 ? '0' + minutes + 'M ' : minutes + 'M ');
+    return '00D ' + (hours < 10 ? '0' + hours + 'H ' : hours + 'H ') + (minutes < 10 ? '0' + minutes + 'M' : minutes + 'M');
   }
 
-  return (days < 10 ? '0' + days + 'D ' : days + 'D ') + (hours < 10 ? '0' + hours + 'H ' : hours + 'H ') + (minutes < 10 ? '0' + minutes + 'M ' : minutes + 'M ');
+  return (days < 10 ? '0' + days + 'D ' : days + 'D ') + (hours < 10 ? '0' + hours + 'H ' : hours + 'H ') + (minutes < 10 ? '0' + minutes + 'M' : minutes + 'M');
 };
 
 export {
