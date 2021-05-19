@@ -53,6 +53,8 @@ Promise.all([api.getEvents(), api.getDestinations(), api.getOffers()])
             return;
           }
 
+          filterPresenter.filtersModeChange(menuItem);
+
           tableButton.classList.add('trip-tabs__btn--active');
           statisticsButton.classList.remove('trip-tabs__btn--active');
 
@@ -69,6 +71,8 @@ Promise.all([api.getEvents(), api.getDestinations(), api.getOffers()])
           if (statisticsButton.classList.contains('trip-tabs__btn--active')) {
             return;
           }
+
+          filterPresenter.filtersModeChange(menuItem);
 
           statisticsButton.classList.add('trip-tabs__btn--active');
           tableButton.classList.remove('trip-tabs__btn--active');
@@ -95,6 +99,10 @@ document.querySelector('.trip-main__event-add-btn').addEventListener('click', (e
   evt.preventDefault();
   boardPresenter.createEvent();
   document.querySelector('.trip-main__event-add-btn').disabled = true;
+});
+
+window.addEventListener('load', () => {
+  navigator.serviceWorker.register('/sw.js');
 });
 
 

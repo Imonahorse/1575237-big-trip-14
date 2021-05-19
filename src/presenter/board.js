@@ -87,6 +87,7 @@ class Board {
       this._sortComponent = null;
     }
 
+    document.querySelector('.trip-main__event-add-btn').disabled = false;
     this._sortComponent = new SortingView(this._currentSortType);
     render(this._boardContainer, this._sortComponent, RenderPosition.AFTERBEGIN);
     this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
