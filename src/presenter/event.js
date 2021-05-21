@@ -2,8 +2,9 @@ import EditEventView from '../view/edit-event.js';
 import EventView from '../view/event.js';
 import {isDatesEqual} from '../utils/event.js';
 import {render, replace, remove} from '../utils/render.js';
-import {isEscEvent} from '../utils/common.js';
+import {isEscEvent, isOnline} from '../utils/common.js';
 import {UserAction, UpdateType, Mode, RenderPosition, State} from '../utils/constant.js';
+import {toast} from '../utils/toast.js';
 
 class Event {
   constructor(eventListComponent, changeData, changeMode) {
@@ -122,6 +123,11 @@ class Event {
   }
 
   _handleEditClick() {
+    if (!isOnline()) {
+      toast('You can\'t edit task offline');
+      return;
+    }
+
     this._replaceCardToForm();
     document.addEventListener('keydown', this._escKeydownHandler);
   }
@@ -132,6 +138,11 @@ class Event {
   }
 
   _handleSubmitEditClick(event) {
+    if (!isOnline()) {
+      toast('You can\'t save task offline');
+      return;
+    }
+
     const isMinorUpdate = !isDatesEqual(this._event.dateTo, event.dateTo);
 
     this._changeData(
@@ -150,6 +161,11 @@ class Event {
   }
 
   _handleDeleteEditClick(event) {
+    if (!isOnline()) {
+      toast('You can\'t delete task offline');
+      return;
+    }
+
     this._changeData(
       UserAction.DELETE_EVENT,
       UpdateType.MAJOR,
