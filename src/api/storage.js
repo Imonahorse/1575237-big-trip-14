@@ -13,23 +13,13 @@ class Storage {
   }
 
   setItems(items) {
-    this._storage.setItem(
-      this._storeKey,
-      JSON.stringify(items),
-    );
+    this._storage.setItem(this._storeKey, JSON.stringify(items));
   }
 
   setItem(key, value) {
     const store = this.getItems();
 
-    this._storage.setItem(
-      this._storeKey,
-      JSON.stringify(
-        Object.assign({}, store, {
-          [key]: value,
-        }),
-      ),
-    );
+    this._storage.setItem(this._storeKey, JSON.stringify(Object.assign({}, store, {[key]: value})));
   }
 
   removeItem(key) {

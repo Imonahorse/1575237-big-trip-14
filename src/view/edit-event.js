@@ -56,13 +56,14 @@ const createOffersList = (type, offers, offersList, isDisabled) => {
   }).join('');
 };
 const createOffersTemplate = (type, offers, idDisabled) => {
-  const newOffers = offersData.getOffers().find((item) => item.type === type.toLowerCase());
-  const offersList = newOffers.offers;
 
-  if (!offersList.length) {
+  if (!offersData.getOffers().length || !offersData.getOffers()) {
     return `<section class="event__section  event__section--offers">
 </section>`;
   }
+
+  const newOffers = offersData.getOffers().find((item) => item.type === type.toLowerCase());
+  const offersList = newOffers.offers;
 
   return `<section class="event__section  event__section--offers">
                     <h3 class="event__section-title  event__section-title--offers">Offers</h3>

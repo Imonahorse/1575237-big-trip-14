@@ -8,9 +8,7 @@ const getSyncedEvents = (items) => {
 
 const createStoreStructure = (items) => {
   return items.reduce((acc, current) => {
-    return Object.assign({}, acc, {
-      [current.id]: current,
-    });
+    return Object.assign({}, acc, {[current.id]: current});
   }, {});
 };
 
@@ -35,28 +33,6 @@ class Provider {
     return Promise.resolve(storeEvents.map(EventsModel.adaptToClient));
   }
 
-  getDestinations() {
-    if (isOnline()) {
-      return this._api.getDestinations()
-        .then((destinations) => {
-          const items = createStoreStructure(destinations.map(EventsModel.adaptToServer));
-          this._store.setItems(items);
-          return destinations;
-        });
-    }
-  }
-
-  getOffers() {
-    if (isOnline()) {
-      return this._api.getOffers()
-        .then((offers) => {
-          const items = createStoreStructure(offers.map(EventsModel.adaptToServer));
-          this._store.setItems(items);
-          return offers;
-        });
-    }
-  }
-
   updateEvent(event) {
     if (isOnline()) {
       return this._api.updateEvent(event)
@@ -71,6 +47,22 @@ class Provider {
     return Promise.resolve(event);
   }
 
+  getOffers() {
+    if (isOnline()) {
+      return this._api.getOffers();
+    }
+
+    return [];
+  }
+
+  getDestinations() {
+    if (isOnline()) {
+      return this._api.getDestinations();
+    }
+
+    return [];
+  }
+
   addEvent(event) {
     if (isOnline()) {
       return this._api.addEvent(event)
@@ -80,7 +72,7 @@ class Provider {
         });
     }
 
-    return Promise.reject(new Error('Add task failed'));
+    return Promise.reject(new Error('Add event failed'));
   }
 
   deleteEvent(event) {
@@ -89,7 +81,7 @@ class Provider {
         .then(() => this._store.removeItem(event.id));
     }
 
-    return Promise.reject(new Error('Delete task failed'));
+    return Promise.reject(new Error('Delete event failed'));
   }
 
   sync() {
@@ -99,12 +91,12 @@ class Provider {
       return this._api.sync(storeEvents)
         .then((response) => {
           // Забираем из ответа синхронизированные задачи
-          const createdTasks = getSyncedEvents(response.created);
-          const updatedTasks = getSyncedEvents(response.updated);
+          const createdEvents = getSyncedEvents(response.created);
+          const updatedEvents = getSyncedEvents(response.updated);
 
           // Добавляем синхронизированные задачи в хранилище.
           // Хранилище должно быть актуальным в любой момент.
-          const items = createStoreStructure([...createdTasks, ...updatedTasks]);
+          const items = createStoreStructure([...createdEvents, ...updatedEvents]);
 
           this._store.setItems(items);
         });

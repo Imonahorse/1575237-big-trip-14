@@ -14,7 +14,7 @@ import {isOnline} from './utils/common.js';
 import Storage from './api/storage.js';
 import Provider from './api/provider.js';
 
-const RANDOM_STRING = 'darkKiLLLer666Leha';
+const RANDOM_STRING = 'DarkKiLLLer666LeXXXa';
 const AUTHORIZATION = `Basic ${RANDOM_STRING}`;
 const END_POINT = 'https://14.ecmascript.pages.academy/big-trip';
 const STORE_PREFIX = 'BigTrip-localstorage';
