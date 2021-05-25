@@ -1,6 +1,6 @@
 class Offers {
   constructor() {
-    this._offers = 0;
+    this._offers = [];
   }
 
   setOffers(offers) {

@@ -28,6 +28,7 @@ class EventNew {
     render(this._eventListContainer, this._eventEditComponent, RenderPosition.AFTERBEGIN);
 
     document.addEventListener('keydown', this._escKeyDownHandler);
+    this._eventEditComponent.getElement().querySelector('.event__input--destination').focus();
   }
 
   destroy() {

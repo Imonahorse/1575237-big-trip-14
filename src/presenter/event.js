@@ -1,9 +1,10 @@
 import EditEventView from '../view/edit-event.js';
 import EventView from '../view/event.js';
-import {isDatesEqual} from '../utils/event.js';
+import {isDatesEqual, isPriceEqual} from '../utils/event.js';
 import {render, replace, remove} from '../utils/render.js';
-import {isEscEvent} from '../utils/common.js';
-import {UserAction, UpdateType, Mode, RenderPosition, State} from '../utils/constant.js';
+import {isEscEvent, isOnline} from '../utils/common.js';
+import {UserAction, UpdateType, Mode, RenderPosition, State, Offline_Message} from '../utils/constant.js';
+import {toast} from '../utils/toast.js';
 
 class Event {
   constructor(eventListComponent, changeData, changeMode) {
@@ -122,6 +123,11 @@ class Event {
   }
 
   _handleEditClick() {
+    if (!isOnline()) {
+      toast(Offline_Message.EDIT_EVENT);
+      return;
+    }
+
     this._replaceCardToForm();
     document.addEventListener('keydown', this._escKeydownHandler);
   }
@@ -132,7 +138,12 @@ class Event {
   }
 
   _handleSubmitEditClick(event) {
-    const isMinorUpdate = !isDatesEqual(this._event.dateTo, event.dateTo);
+    if (!isOnline()) {
+      toast(Offline_Message.SAVE_EVENT);
+      return;
+    }
+
+    const isMinorUpdate = !isDatesEqual(this._event.dateTo, event.dateTo) || !isPriceEqual(this._event.basePrice, event.basePrice);
 
     this._changeData(
       UserAction.UPDATE_EVENT,
@@ -144,12 +155,17 @@ class Event {
   _handleFavoriteClick() {
     this._changeData(
       UserAction.UPDATE_EVENT,
-      UpdateType.MINOR,
+      UpdateType.PATCH,
       Object.assign({}, this._event, {isFavorite: !this._event.isFavorite}),
     );
   }
 
   _handleDeleteEditClick(event) {
+    if (!isOnline()) {
+      toast(Offline_Message.DELETE_EVENT);
+      return;
+    }
+
     this._changeData(
       UserAction.DELETE_EVENT,
       UpdateType.MAJOR,

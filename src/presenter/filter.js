@@ -1,7 +1,7 @@
 import FilterView from '../view/filter.js';
 import {render, replace, remove} from '../utils/render.js';
 import {filter} from '../utils/filter.js';
-import {FilterType, UpdateType, RenderPosition} from '../utils/constant.js';
+import {FilterType, UpdateType, RenderPosition, MenuItem} from '../utils/constant.js';
 
 class Filter {
   constructor(filterContainer, filterModel, eventsModel) {
@@ -43,6 +43,7 @@ class Filter {
       return;
     }
 
+    document.querySelector('.trip-main__event-add-btn').disabled = false;
     this._filterModel.setFilter(UpdateType.MAJOR, filterType);
   }
 
@@ -66,6 +67,17 @@ class Filter {
         count: filter[FilterType.PAST](events).length,
       },
     ];
+  }
+
+  filtersModeChange(menuItem) {
+    switch (menuItem) {
+      case MenuItem.TABLE:
+        this._filterComponent.getElement().querySelectorAll('input').forEach((input) => input.disabled = false);
+        break;
+      case MenuItem.STATISTICS:
+        this._filterComponent.getElement().querySelectorAll('input').forEach((input) => input.disabled = true);
+        break;
+    }
   }
 }
 

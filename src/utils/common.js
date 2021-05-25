@@ -28,11 +28,15 @@ const msToTime = (duration) => {
 
   return (days < 10 ? '0' + days + 'D ' : days + 'D ') + (hours < 10 ? '0' + hours + 'H ' : hours + 'H ') + (minutes < 10 ? '0' + minutes + 'M' : minutes + 'M');
 };
+const isOnline = () => {
+  return window.navigator.onLine;
+};
 
 export {
   getArrayRandomElement,
   getRandomArray,
   getRandomInteger,
   isEscEvent,
-  msToTime
+  msToTime,
+  isOnline
 };
