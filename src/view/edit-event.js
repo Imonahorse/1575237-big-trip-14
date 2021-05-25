@@ -4,6 +4,7 @@ import {offersData, destinationData} from '../main.js';
 import SmartView from './smart.js';
 import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
+import {isOnline} from '../utils/common.js';
 
 const BLANK_EVENT = {
   dateFrom: new Date(),
@@ -28,7 +29,7 @@ ${prevTypeState.toLowerCase() === type.toLowerCase() ? 'checked' : ''}>
   }).join('');
 };
 const createPhotosTemplate = (photos) => {
-  if (!photos || !photos.length) {
+  if (!photos || !photos.length || !isOnline()) {
     return '';
   }
 

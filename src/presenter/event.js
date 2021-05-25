@@ -3,7 +3,7 @@ import EventView from '../view/event.js';
 import {isDatesEqual, isPriceEqual} from '../utils/event.js';
 import {render, replace, remove} from '../utils/render.js';
 import {isEscEvent, isOnline} from '../utils/common.js';
-import {UserAction, UpdateType, Mode, RenderPosition, State, Offline_Message} from '../utils/constant.js';
+import {UserAction, UpdateType, Mode, RenderPosition, State, OfflineMessage} from '../utils/constant.js';
 import {toast} from '../utils/toast.js';
 
 class Event {
@@ -124,7 +124,7 @@ class Event {
 
   _handleEditClick() {
     if (!isOnline()) {
-      toast(Offline_Message.EDIT_EVENT);
+      toast(OfflineMessage.EDIT_EVENT);
       return;
     }
 
@@ -139,7 +139,7 @@ class Event {
 
   _handleSubmitEditClick(event) {
     if (!isOnline()) {
-      toast(Offline_Message.SAVE_EVENT);
+      toast(OfflineMessage.SAVE_EVENT);
       return;
     }
 
@@ -162,7 +162,7 @@ class Event {
 
   _handleDeleteEditClick(event) {
     if (!isOnline()) {
-      toast(Offline_Message.DELETE_EVENT);
+      toast(OfflineMessage.DELETE_EVENT);
       return;
     }
 

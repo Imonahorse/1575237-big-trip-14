@@ -50,12 +50,16 @@ class Provider {
     if (isOnline()) {
       return this._api.getOffers();
     }
+
+    return Promise.resolve([]);
   }
 
   getDestinations() {
     if (isOnline()) {
       return this._api.getDestinations();
     }
+
+    return Promise.resolve([]);
   }
 
 
