@@ -91,7 +91,6 @@ const handleSiteMenuClick = (menuItem) => {
 
 Promise.all([apiWithProvider.getEvents(), apiWithProvider.getDestinations(), apiWithProvider.getOffers()])
   .then(([events, destinations, offers]) => {
-    debugger
     offersData.setOffers(offers);
     destinationData.setDestination(destinations);
     eventsModel.setEvents(UpdateType.INIT, events);
