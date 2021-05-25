@@ -2,19 +2,13 @@ import AbstractView from './abstract.js';
 import {humanizeDateFormat} from '../utils/event.js';
 
 const getTotalPrice = (events) => {
-  let totalPrice = 0;
-
-  events.forEach((event) => {
-    totalPrice += event.basePrice;
-  });
-
-  const offers = [];
-
-  events.forEach((event) => offers.push(...event.offers));
-  offers.forEach((event) => {
-    totalPrice += event.price;
-  });
-  return totalPrice;
+  const totalBasePrice = events.reduce(((sum, current) => sum + current.basePrice), 0);
+  const totalOffersPrice = events.reduce((sum, current) => {
+    let offersCount = 0;
+    current.offers.forEach((item) => offersCount += item.price);
+    return sum + offersCount;
+  }, 0);
+  return totalBasePrice + totalOffersPrice;
 };
 
 const createRouteInfoTemplate = (events) => {

@@ -42,6 +42,10 @@ const isDatesEqual = (dateA, dateB) => {
   return (dateA === null && dateB === null) ? true : dayjs(dateA).isSame(dateB, 'D');
 };
 
+const isPriceEqual = (priceA, priceB) => {
+  return (priceA === null && priceB === null) ? true : priceB === priceA;
+};
+
 export {
   generateDate,
   generateDateFrom,
@@ -51,5 +55,6 @@ export {
   isEventComing,
   isEventExpired,
   humanizeEditEventDateFormat,
-  isDatesEqual
+  isDatesEqual,
+  isPriceEqual
 };

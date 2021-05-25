@@ -2,8 +2,7 @@ import EventsModel from '../model/events.js';
 import {isOnline} from '../utils/common.js';
 
 const getSyncedEvents = (items) => {
-  return items.filter(({success}) => success)
-    .map(({payload}) => payload.event);
+  return items.filter(({success}) => success).map(({payload}) => payload.event);
 };
 
 const createStoreStructure = (items) => {
@@ -51,17 +50,14 @@ class Provider {
     if (isOnline()) {
       return this._api.getOffers();
     }
-
-    return [];
   }
 
   getDestinations() {
     if (isOnline()) {
       return this._api.getDestinations();
     }
-
-    return [];
   }
+
 
   addEvent(event) {
     if (isOnline()) {
@@ -90,12 +86,9 @@ class Provider {
 
       return this._api.sync(storeEvents)
         .then((response) => {
-          // Забираем из ответа синхронизированные задачи
           const createdEvents = getSyncedEvents(response.created);
           const updatedEvents = getSyncedEvents(response.updated);
 
-          // Добавляем синхронизированные задачи в хранилище.
-          // Хранилище должно быть актуальным в любой момент.
           const items = createStoreStructure([...createdEvents, ...updatedEvents]);
 
           this._store.setItems(items);

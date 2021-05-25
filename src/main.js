@@ -5,7 +5,7 @@ import EventsModel from './model/events';
 import FilterModel from './model/filter.js';
 import FilterPresenter from './presenter/filter.js';
 import Api from './api/api.js';
-import {UpdateType, RenderPosition, MenuItem} from './utils/constant.js';
+import {UpdateType, RenderPosition, MenuItem, Offline_Message} from './utils/constant.js';
 import Offers from './data/offers.js';
 import Destination from './data/destination.js';
 import RouteInfoPresenter from './presenter/route-info';
@@ -13,19 +13,21 @@ import StatisticsView from './view/statistics.js';
 import {isOnline} from './utils/common.js';
 import Storage from './api/storage.js';
 import Provider from './api/provider.js';
+import {toast} from './utils/toast.js';
 
-const RANDOM_STRING = 'DarkKiLLLer666LeXXXa';
+const RANDOM_STRING = 'DaRkKiLLLeR666LeXXXa77';
 const AUTHORIZATION = `Basic ${RANDOM_STRING}`;
 const END_POINT = 'https://14.ecmascript.pages.academy/big-trip';
 const STORE_PREFIX = 'BigTrip-localstorage';
 const STORE_VER = 'v14';
 const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
-
+const offlineTitle = ' [offline]';
 
 const tripMain = document.querySelector('.trip-main');
 const tripControlsNavigation = tripMain.querySelector('.trip-controls__navigation');
 const tripControlsFilters = tripMain.querySelector('.trip-controls__filters');
 const tripEventsSection = document.querySelector('.trip-events');
+const addButton = document.querySelector('.trip-main__event-add-btn');
 
 const eventsModel = new EventsModel();
 const filterModel = new FilterModel();
@@ -39,8 +41,8 @@ let statisticsComponent = null;
 const boardPresenter = new BoardPresenter(tripEventsSection, eventsModel, filterModel, apiWithProvider);
 const filterPresenter = new FilterPresenter(tripControlsFilters, filterModel, eventsModel);
 const routeInfoPresenter = new RouteInfoPresenter(tripMain, eventsModel);
-document.querySelector('.trip-main__event-add-btn').disabled = true;
-render(tripControlsNavigation, siteMenuComponent, RenderPosition.BEFOREEND);
+addButton.disabled = true;
+const renderNavControls = () => render(tripControlsNavigation, siteMenuComponent, RenderPosition.BEFOREEND);
 const handleSiteMenuClick = (menuItem) => {
   const tableButton = siteMenuComponent.getElement().querySelector(`[data-menu-type=${MenuItem.TABLE}]`);
   const statisticsButton = siteMenuComponent.getElement().querySelector(`[data-menu-type=${MenuItem.STATISTICS}]`);
@@ -56,7 +58,7 @@ const handleSiteMenuClick = (menuItem) => {
       tableButton.classList.add('trip-tabs__btn--active');
       statisticsButton.classList.remove('trip-tabs__btn--active');
 
-      document.querySelector('.trip-main__event-add-btn').disabled = false;
+      addButton.disabled = false;
       document.querySelectorAll('.page-body__container').forEach((item) => {
         item.classList.remove('page-body__container--no-after');
       });
@@ -75,7 +77,7 @@ const handleSiteMenuClick = (menuItem) => {
       statisticsButton.classList.add('trip-tabs__btn--active');
       tableButton.classList.remove('trip-tabs__btn--active');
 
-      document.querySelector('.trip-main__event-add-btn').disabled = true;
+      addButton.disabled = true;
       document.querySelectorAll('.page-body__container').forEach((item) => {
         item.classList.add('page-body__container--no-after');
       });
@@ -92,35 +94,44 @@ Promise.all([apiWithProvider.getEvents(), apiWithProvider.getDestinations(), api
     offersData.setOffers(offers);
     destinationData.setDestination(destinations);
     eventsModel.setEvents(UpdateType.INIT, events);
-    document.querySelector('.trip-main__event-add-btn').disabled = false;
+    renderNavControls();
+    addButton.disabled = false;
     filterPresenter.init();
     routeInfoPresenter.init();
     siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
   })
-  .catch((err) => alert(err));
+  .catch(() => {
+    offersData.setOffers([]);
+    destinationData.setDestination([]);
+    eventsModel.setEvents(UpdateType.INIT, []);
+    renderNavControls();
+    siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
+  });
 
 boardPresenter.init();
 
-document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
+addButton.addEventListener('click', (evt) => {
   evt.preventDefault();
   if (!isOnline()) {
-    throw new Error('You can\'t create new task offline');
+    toast(Offline_Message.NEW_EVENT);
+    return;
   }
   boardPresenter.createEvent();
-  document.querySelector('.trip-main__event-add-btn').disabled = true;
+  addButton.disabled = true;
 });
 
 window.addEventListener('load', () => {
-  navigator.serviceWorker.register('./sw.js');
+  navigator.serviceWorker.register('/sw.js');
 });
 
 window.addEventListener('online', () => {
-  document.title = document.title.replace(' [offline]', '');
+  document.title = document.title.replace(offlineTitle, '');
   apiWithProvider.sync();
 });
 
 window.addEventListener('offline', () => {
-  document.title += ' [offline]';
+  toast(Offline_Message.DISCONNECT);
+  document.title += offlineTitle;
 });
 
 
