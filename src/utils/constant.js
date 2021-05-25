@@ -64,7 +64,7 @@ const MenuItem = {
   TABLE: 'TABLE',
   STATISTICS: 'STATISTICS',
 };
-const Offline_Message = {
+const OfflineMessage = {
   NEW_EVENT: 'You can\'t create new task offline',
   DISCONNECT: 'Lost internet connection',
   SAVE_EVENT: 'You can\'t save task offline',
@@ -72,4 +72,4 @@ const Offline_Message = {
   EDIT_EVENT: 'You can\'t edit task offline',
 };
 
-export {TYPES, CITIES, UserAction, UpdateType, FilterType, Mode, SortType, RenderPosition, State, MenuItem, Offline_Message};
+export {TYPES, CITIES, UserAction, UpdateType, FilterType, Mode, SortType, RenderPosition, State, MenuItem, OfflineMessage};

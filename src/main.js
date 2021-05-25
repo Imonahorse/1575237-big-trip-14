@@ -5,7 +5,7 @@ import EventsModel from './model/events';
 import FilterModel from './model/filter.js';
 import FilterPresenter from './presenter/filter.js';
 import Api from './api/api.js';
-import {UpdateType, RenderPosition, MenuItem, Offline_Message} from './utils/constant.js';
+import {UpdateType, RenderPosition, MenuItem, OfflineMessage} from './utils/constant.js';
 import Offers from './data/offers.js';
 import Destination from './data/destination.js';
 import RouteInfoPresenter from './presenter/route-info';
@@ -15,7 +15,7 @@ import Storage from './api/storage.js';
 import Provider from './api/provider.js';
 import {toast} from './utils/toast.js';
 
-const RANDOM_STRING = 'DaRkKiLLLeR666LeXXXa77';
+const RANDOM_STRING = 'DaRkKiLLLeR666LeXXXa770';
 const AUTHORIZATION = `Basic ${RANDOM_STRING}`;
 const END_POINT = 'https://14.ecmascript.pages.academy/big-trip';
 const STORE_PREFIX = 'BigTrip-localstorage';
@@ -91,6 +91,7 @@ const handleSiteMenuClick = (menuItem) => {
 
 Promise.all([apiWithProvider.getEvents(), apiWithProvider.getDestinations(), apiWithProvider.getOffers()])
   .then(([events, destinations, offers]) => {
+    debugger
     offersData.setOffers(offers);
     destinationData.setDestination(destinations);
     eventsModel.setEvents(UpdateType.INIT, events);
@@ -101,7 +102,6 @@ Promise.all([apiWithProvider.getEvents(), apiWithProvider.getDestinations(), api
     siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
   })
   .catch(() => {
-    offersData.setOffers([]);
     destinationData.setDestination([]);
     eventsModel.setEvents(UpdateType.INIT, []);
     renderNavControls();
@@ -113,7 +113,7 @@ boardPresenter.init();
 addButton.addEventListener('click', (evt) => {
   evt.preventDefault();
   if (!isOnline()) {
-    toast(Offline_Message.NEW_EVENT);
+    toast(OfflineMessage.NEW_EVENT);
     return;
   }
   boardPresenter.createEvent();
@@ -130,7 +130,7 @@ window.addEventListener('online', () => {
 });
 
 window.addEventListener('offline', () => {
-  toast(Offline_Message.DISCONNECT);
+  toast(OfflineMessage.DISCONNECT);
   document.title += offlineTitle;
 });
 

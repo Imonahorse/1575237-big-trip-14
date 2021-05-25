@@ -15,7 +15,7 @@ const msToTime = (duration) => {
   const hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
 
   if (days === 0 && hours === 0 && minutes === 0) {
-    return '00D 00H 00M';
+    return '00H 00M';
   }
 
   if (days === 0 && hours === 0) {
