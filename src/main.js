@@ -116,7 +116,7 @@ addButton.addEventListener('click', (evt) => {
     return;
   }
   boardPresenter.createEvent();
-  addButton.disabled = true;
+  // addButton.disabled = true;
 });
 
 window.addEventListener('load', () => {

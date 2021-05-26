@@ -10,24 +10,44 @@ const getTotalPrice = (events) => {
   }, 0);
   return totalBasePrice + totalOffersPrice;
 };
+const getDestinationName = (events) => {
+  const firstDestinationPoint = events[0].destination.name;
+  const lastDestinationPoint = events[events.length - 1].destination.name;
+
+  if (events.length === 1) {
+    return firstDestinationPoint;
+  }
+  if (events.length === 2) {
+    return firstDestinationPoint + ' &mdash; ' + lastDestinationPoint;
+  }
+  if (events.length >= 3) {
+    return firstDestinationPoint + ' &mdash; . . . &mdash; ' + lastDestinationPoint;
+  }
+};
+const getDate = (events) => {
+  const firstDate = humanizeDateFormat(events[0].dateFrom);
+  const lastDate = humanizeDateFormat(events[events.length - 1].dateTo);
+
+  if (events.length === 1) {
+    return firstDate;
+  }
+  if (events.length >= 2) {
+    return firstDate + ' &nbsp;&mdash;&nbsp; ' + lastDate;
+  }
+};
 
 const createRouteInfoTemplate = (events) => {
-  const totalPrice = getTotalPrice(events);
   const eventsSort = events.slice().sort((a, b) => a.dateTo - b.dateTo);
-  const firstDate = humanizeDateFormat(eventsSort[0].dateFrom);
-  const lastDate = humanizeDateFormat(eventsSort[eventsSort.length - 1].dateTo);
-  const firstDestinationPoint = eventsSort[0].destination.name;
-  const lastDestinationPoint = eventsSort[eventsSort.length - 1].destination.name;
 
   return `<section class="trip-main__trip-info  trip-info">
             <div class="trip-info__main">
-              <h1 class="trip-info__title">${firstDestinationPoint} &mdash; . . . &mdash; ${lastDestinationPoint}</h1>
+              <h1 class="trip-info__title">${getDestinationName(eventsSort)}</h1>
 
-              <p class="trip-info__dates">${firstDate}&nbsp;&mdash;&nbsp;${lastDate}</p>
+              <p class="trip-info__dates">${getDate(eventsSort)}</p>
             </div>
 
             <p class="trip-info__cost">
-              Total: &euro;&nbsp;<span class="trip-info__cost-value">${totalPrice}</span>
+              Total: &euro;&nbsp;<span class="trip-info__cost-value">${getTotalPrice(events)}</span>
             </p>
           </section>`;
 };

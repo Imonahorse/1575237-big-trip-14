@@ -19,13 +19,20 @@ class RouteInfo {
     const prevRoutInfoComponent = this._routeInfoComponent;
     this._routeInfoComponent = new RouteInfoView(events);
 
-    if (prevRoutInfoComponent === null) {
-      render(this._container, this._routeInfoComponent, RenderPosition.AFTERBEGIN);
-      return;
+    if (events.length) {
+      if (prevRoutInfoComponent === null) {
+        render(this._container, this._routeInfoComponent, RenderPosition.AFTERBEGIN);
+        return;
+      }
+
+      replace(this._routeInfoComponent, prevRoutInfoComponent);
+      remove(prevRoutInfoComponent);
     }
 
-    replace(this._routeInfoComponent, prevRoutInfoComponent);
-    remove(prevRoutInfoComponent);
+    if(!events.length) {
+      remove(prevRoutInfoComponent);
+      this._routeInfoComponent = null;
+    }
   }
 
   _handleModelEvent() {
@@ -33,8 +40,7 @@ class RouteInfo {
   }
 
   _getRoutInfo() {
-    const events = this._eventsModel.getEvents();
-    return events;
+    return this._eventsModel.getEvents();
   }
 }
 

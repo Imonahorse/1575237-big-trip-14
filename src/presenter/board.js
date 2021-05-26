@@ -190,6 +190,7 @@ class Board {
     }
 
     if (this._getEvents().length === EMPTY_EVENTS_LIST) {
+      this._renderEventsList();
       this._renderNoEvents();
       return;
     }

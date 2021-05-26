@@ -232,6 +232,7 @@ class EditEvent extends SmartView {
         this.getElement().querySelector('.event__input--time-end'),
         {
           enableTime: true,
+          'time_24hr': true,
           dateFormat: 'd/m/y H:i',
           defaultDate: this._data.dateTo.$d,
           minDate: humanizeEditEventDateFormat(this._data.dateFrom),
@@ -252,6 +253,7 @@ class EditEvent extends SmartView {
         this.getElement().querySelector('.event__input--time-start'),
         {
           enableTime: true,
+          'time_24hr': true,
           dateFormat: 'd/m/y H:i',
           defaultDate: this._data.dateFrom.$d,
           onClose: this._dateFromChangeHandler,

@@ -70,9 +70,17 @@ class Filter {
   }
 
   filtersModeChange(menuItem) {
+    const actualFilterEvents = this._getFilters().slice().reduce((sum, {type, count}) => ({...sum, [type]: count}), {});
+
     switch (menuItem) {
       case MenuItem.TABLE:
-        this._filterComponent.getElement().querySelectorAll('input').forEach((input) => input.disabled = false);
+        this._filterComponent.getElement().querySelectorAll('input').forEach((input) => {
+          if (actualFilterEvents[input.value] > 0) {
+            input.disabled = false;
+            return;
+          }
+          input.disabled = true;
+        });
         break;
       case MenuItem.STATISTICS:
         this._filterComponent.getElement().querySelectorAll('input').forEach((input) => input.disabled = true);
