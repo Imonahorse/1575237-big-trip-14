@@ -26,6 +26,7 @@ class Event {
   init(event) {
     this._event = event;
 
+
     const prevComponent = this._eventComponent;
     const prevEditComponent = this._eventEditComponent;
 
