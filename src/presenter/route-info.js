@@ -2,7 +2,7 @@ import RouteInfoView from '../view/route-info.js';
 import {render, replace, remove} from '../utils/render.js';
 import {RenderPosition} from '../utils/constant.js';
 
-class RouteInfo {
+export default class RouteInfo {
   constructor(container, eventsModel) {
     this._container = container;
     this._eventsModel = eventsModel;
@@ -14,7 +14,7 @@ class RouteInfo {
   }
 
   init() {
-    const events = this._getRoutInfo();
+    const events = this._getRouteInfo();
 
     const prevRoutInfoComponent = this._routeInfoComponent;
     this._routeInfoComponent = new RouteInfoView(events);
@@ -39,9 +39,7 @@ class RouteInfo {
     this.init();
   }
 
-  _getRoutInfo() {
-    return this._eventsModel.getEvents();
+  _getRouteInfo() {
+    return this._eventsModel.get();
   }
 }
-
-export default RouteInfo;

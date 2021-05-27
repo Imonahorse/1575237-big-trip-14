@@ -6,11 +6,8 @@ const createNoTaskTemplate = () => {
           </p>`;
 };
 
-class NoEvent extends AbstractView{
+export default class NoEvent extends AbstractView{
   getTemplate() {
     return createNoTaskTemplate();
   }
 }
-
-export default NoEvent;
-

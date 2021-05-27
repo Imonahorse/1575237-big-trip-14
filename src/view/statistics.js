@@ -21,7 +21,7 @@ const createStatisticsTemplate = () => {
         </section>`;
 };
 
-class Statistics extends SmartView {
+export default class Statistics extends SmartView {
   constructor(events) {
     super();
     this._data = events;
@@ -65,5 +65,3 @@ class Statistics extends SmartView {
     this._durationChart = renderDurationChart(timeCtx, this._data);
   }
 }
-
-export default Statistics;

@@ -52,7 +52,7 @@ const createRouteInfoTemplate = (events) => {
           </section>`;
 };
 
-class RouteInfo extends AbstractView {
+export default class RouteInfo extends AbstractView {
   constructor(events) {
     super();
 
@@ -63,5 +63,3 @@ class RouteInfo extends AbstractView {
     return createRouteInfoTemplate(this._events);
   }
 }
-
-export default RouteInfo;

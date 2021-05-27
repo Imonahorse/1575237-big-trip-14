@@ -1,13 +1,14 @@
 import EditEventView from '../view/edit-event.js';
 import {remove, render} from '../utils/render.js';
-import {UserAction, UpdateType, Mode, RenderPosition} from '../utils/constant.js';
+import {UserAction, UpdateType, RenderPosition} from '../utils/constant.js';
 import {isEscEvent} from '../utils/common.js';
+import {disableAddButton, enableAddButton} from '../utils/add-button.js';
 
-class EventNew {
+
+export default class newEvent {
   constructor(eventListContainer, changeData) {
     this._eventListContainer = eventListContainer;
     this._changeData = changeData;
-    this._mode = Mode.ADDING;
 
     this._eventEditComponent = null;
 
@@ -24,8 +25,10 @@ class EventNew {
     this._eventEditComponent = new EditEventView();
     this._eventEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._eventEditComponent.setDeleteClickHandler(this._handleDeleteClick);
+    this._eventEditComponent.setEditClickHandler(this._handleDeleteClick);
 
     render(this._eventListContainer, this._eventEditComponent, RenderPosition.AFTERBEGIN);
+    disableAddButton();
 
     document.addEventListener('keydown', this._escKeyDownHandler);
     this._eventEditComponent.getElement().querySelector('.event__input--destination').focus();
@@ -40,6 +43,7 @@ class EventNew {
     this._eventEditComponent = null;
 
     document.removeEventListener('keydown', this._escKeyDownHandler);
+    enableAddButton();
   }
 
   setSaving() {
@@ -67,21 +71,16 @@ class EventNew {
       UpdateType.MINOR,
       event,
     );
-    document.querySelector('.trip-main__event-add-btn').disabled = false;
   }
 
   _handleDeleteClick() {
     this.destroy();
-    document.querySelector('.trip-main__event-add-btn').disabled = false;
   }
 
   _escKeyDownHandler(evt) {
     if (isEscEvent(evt)) {
       evt.preventDefault();
       this.destroy();
-      document.querySelector('.trip-main__event-add-btn').disabled = false;
     }
   }
 }
-
-export default EventNew;

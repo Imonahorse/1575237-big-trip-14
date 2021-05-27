@@ -1,30 +1,3 @@
-const TYPES = [
-  'Taxi',
-  'Bus',
-  'Train',
-  'Ship',
-  'Transport',
-  'Drive',
-  'Flight',
-  'Check-in',
-  'Sightseeing',
-  'Restaurant',
-];
-const CITIES = [
-  'London',
-  'Paris',
-  'Moscow',
-  'Amsterdam',
-  'Warsaw',
-  'Minsk',
-  'Brussels',
-  'Brasilia',
-  'Ottawa',
-  'Helsinki',
-  'Berlin',
-  'Kiev',
-  'Astana',
-];
 const UserAction = {
   UPDATE_EVENT: 'UPDATE_EVENT',
   ADD_EVENT: 'ADD_EVENT',
@@ -40,11 +13,6 @@ const FilterType = {
   EVERYTHING: 'everything',
   FUTURE: 'future',
   PAST: 'past',
-};
-const Mode = {
-  DEFAULT: 'DEFAULT',
-  EDITING: 'EDITING',
-  ADDING: 'ADDING',
 };
 const SortType = {
   DAY: 'day',
@@ -71,5 +39,10 @@ const OfflineMessage = {
   DELETE_EVENT: 'You can\'t delete task offline',
   EDIT_EVENT: 'You can\'t edit task offline',
 };
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
+const OFFLINE_TITLE = ' [offline]';
 
-export {TYPES, CITIES, UserAction, UpdateType, FilterType, Mode, SortType, RenderPosition, State, MenuItem, OfflineMessage};
+export {UserAction, UpdateType, FilterType, SortType, RenderPosition, State, MenuItem, OfflineMessage, Mode, OFFLINE_TITLE};

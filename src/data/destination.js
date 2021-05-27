@@ -1,15 +1,13 @@
-class Destination {
+export default class Destination {
   constructor() {
     this._destination = [];
   }
 
-  setDestination(destination) {
+  set(destination) {
     this._destination = destination.slice();
   }
 
-  getDestination() {
+  get() {
     return this._destination;
   }
 }
-
-export default Destination;

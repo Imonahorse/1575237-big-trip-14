@@ -3,7 +3,7 @@ import {render, replace, remove} from '../utils/render.js';
 import {filter} from '../utils/filter.js';
 import {FilterType, UpdateType, RenderPosition, MenuItem} from '../utils/constant.js';
 
-class Filter {
+export default class Filter {
   constructor(filterContainer, filterModel, eventsModel) {
     this._filterContainer = filterContainer;
     this._filterModel = filterModel;
@@ -22,8 +22,8 @@ class Filter {
     const filters = this._getFilters();
     const prevFilterComponent = this._filterComponent;
 
-    this._filterComponent = new FilterView(filters, this._filterModel.getFilter());
-    this._filterComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
+    this._filterComponent = new FilterView(filters, this._filterModel.get());
+    this._filterComponent.setTypeChangeHandler(this._handleFilterTypeChange);
 
     if (prevFilterComponent === null) {
       render(this._filterContainer, this._filterComponent, RenderPosition.BEFOREEND);
@@ -39,16 +39,16 @@ class Filter {
   }
 
   _handleFilterTypeChange(filterType) {
-    if (this._filterModel.getFilter() === filterType) {
+    if (this._filterModel.get() === filterType) {
       return;
     }
 
     document.querySelector('.trip-main__event-add-btn').disabled = false;
-    this._filterModel.setFilter(UpdateType.MAJOR, filterType);
+    this._filterModel.set(UpdateType.MAJOR, filterType);
   }
 
   _getFilters() {
-    const events = this._eventsModel.getEvents();
+    const events = this._eventsModel.get();
 
     return [
       {
@@ -69,7 +69,7 @@ class Filter {
     ];
   }
 
-  filtersModeChange(menuItem) {
+  changeMode(menuItem) {
     const actualFilterEvents = this._getFilters().slice().reduce((sum, {type, count}) => ({...sum, [type]: count}), {});
 
     switch (menuItem) {
@@ -88,5 +88,3 @@ class Filter {
     }
   }
 }
-
-export default Filter;

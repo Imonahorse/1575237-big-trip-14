@@ -2,7 +2,7 @@ import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {msToTime} from './common.js';
 
-const makeItemsUniq = (items) => [...new Set(items)];
+const makeItemsUnique = (items) => [...new Set(items)];
 const countEventsByType = (events, type) => {
   return events.filter((event) => event.type === type).length;
 };
@@ -21,15 +21,15 @@ const countDurationByType = (events, type) => {
 
 const renderTypesChart = (typeCtx, events) => {
   const types = events.map((event) => event.type);
-  const uniqTypes = makeItemsUniq(types);
-  const eventsByTypeCounts = uniqTypes.map((item) => countEventsByType(events, item));
-  const uniqTypesUpperCase = uniqTypes.map((item) => item.toUpperCase());
+  const uniqueTypes = makeItemsUnique(types);
+  const eventsByTypeCounts = uniqueTypes.map((item) => countEventsByType(events, item));
+  const uniqueTypesUpperCase = uniqueTypes.map((item) => item.toUpperCase());
 
   const typeChart = new Chart(typeCtx, {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
     data: {
-      labels: uniqTypesUpperCase,
+      labels: uniqueTypesUpperCase,
       datasets: [{
         data: eventsByTypeCounts,
         backgroundColor: '#ffffff',
@@ -93,15 +93,15 @@ const renderTypesChart = (typeCtx, events) => {
 };
 const renderMoneysChart = (moneyCtx, events) => {
   const types = events.map((event) => event.type);
-  const uniqTypes = makeItemsUniq(types);
-  const eventsByPriceCounts = uniqTypes.map((item) => countPriceByType(events, item));
-  const uniqTypesUpperCase = uniqTypes.map((item) => item.toUpperCase());
+  const uniqueTypes = makeItemsUnique(types);
+  const eventsByPriceCounts = uniqueTypes.map((item) => countPriceByType(events, item));
+  const uniqueTypesUpperCase = uniqueTypes.map((item) => item.toUpperCase());
 
   const moneyChart = new Chart(moneyCtx, {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
     data: {
-      labels: uniqTypesUpperCase,
+      labels: uniqueTypesUpperCase,
       datasets: [{
         data: eventsByPriceCounts,
         backgroundColor: '#ffffff',
@@ -166,15 +166,15 @@ const renderMoneysChart = (moneyCtx, events) => {
 };
 const renderDurationChart = (timeCtx, events) => {
   const types = events.map((event) => event.type);
-  const uniqTypes = makeItemsUniq(types);
-  const eventsByDurationCounts = uniqTypes.map((item) => countDurationByType(events, item));
-  const uniqTypesUpperCase = uniqTypes.map((item) => item.toUpperCase());
+  const uniqueTypes = makeItemsUnique(types);
+  const eventsByDurationCounts = uniqueTypes.map((item) => countDurationByType(events, item));
+  const uniqueTypesUpperCase = uniqueTypes.map((item) => item.toUpperCase());
 
   const timeChart = new Chart(timeCtx, {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
     data: {
-      labels: uniqTypesUpperCase,
+      labels: uniqueTypesUpperCase,
       datasets: [{
         data: eventsByDurationCounts,
         backgroundColor: '#ffffff',

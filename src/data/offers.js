@@ -1,15 +1,13 @@
-class Offers {
+export default class Offers {
   constructor() {
     this._offers = [];
   }
 
-  setOffers(offers) {
+  set(offers) {
     this._offers = offers.slice();
   }
 
-  getOffers() {
+  get() {
     return this._offers;
   }
 }
-
-export default Offers;

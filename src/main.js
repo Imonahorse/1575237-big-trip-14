@@ -5,7 +5,7 @@ import EventsModel from './model/events';
 import FilterModel from './model/filter.js';
 import FilterPresenter from './presenter/filter.js';
 import Api from './api/api.js';
-import {UpdateType, RenderPosition, MenuItem, OfflineMessage} from './utils/constant.js';
+import {UpdateType, RenderPosition, MenuItem, OfflineMessage, OFFLINE_TITLE} from './utils/constant.js';
 import Offers from './data/offers.js';
 import Destination from './data/destination.js';
 import RouteInfoPresenter from './presenter/route-info';
@@ -14,20 +14,19 @@ import {isOnline} from './utils/common.js';
 import Storage from './api/storage.js';
 import Provider from './api/provider.js';
 import {toast} from './utils/toast.js';
+import {enableAddButton, disableAddButton} from './utils/add-button.js';
 
-const RANDOM_STRING = 'DaRkKiLLLeR666LeXXXa770';
+const RANDOM_STRING = 'DaRkKiLLLeR666LeHa9999';
 const AUTHORIZATION = `Basic ${RANDOM_STRING}`;
 const END_POINT = 'https://14.ecmascript.pages.academy/big-trip';
 const STORE_PREFIX = 'BigTrip-localstorage';
 const STORE_VER = 'v14';
 const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
-const offlineTitle = ' [offline]';
 
 const tripMain = document.querySelector('.trip-main');
 const tripControlsNavigation = tripMain.querySelector('.trip-controls__navigation');
 const tripControlsFilters = tripMain.querySelector('.trip-controls__filters');
 const tripEventsSection = document.querySelector('.trip-events');
-const addButton = document.querySelector('.trip-main__event-add-btn');
 
 const eventsModel = new EventsModel();
 const filterModel = new FilterModel();
@@ -41,24 +40,23 @@ let statisticsComponent = null;
 const boardPresenter = new BoardPresenter(tripEventsSection, eventsModel, filterModel, apiWithProvider);
 const filterPresenter = new FilterPresenter(tripControlsFilters, filterModel, eventsModel);
 const routeInfoPresenter = new RouteInfoPresenter(tripMain, eventsModel);
-addButton.disabled = true;
 const renderNavControls = () => render(tripControlsNavigation, siteMenuComponent, RenderPosition.BEFOREEND);
+const addButton = document.querySelector('.trip-main__event-add-btn');
+disableAddButton();
 const handleSiteMenuClick = (menuItem) => {
   const tableButton = siteMenuComponent.getElement().querySelector(`[data-menu-type=${MenuItem.TABLE}]`);
   const statisticsButton = siteMenuComponent.getElement().querySelector(`[data-menu-type=${MenuItem.STATISTICS}]`);
-
+  filterPresenter.changeMode(menuItem);
   switch (menuItem) {
     case MenuItem.TABLE:
       if (tableButton.classList.contains('trip-tabs__btn--active')) {
         return;
       }
 
-      filterPresenter.filtersModeChange(menuItem);
-
       tableButton.classList.add('trip-tabs__btn--active');
       statisticsButton.classList.remove('trip-tabs__btn--active');
 
-      addButton.disabled = false;
+      enableAddButton();
       document.querySelectorAll('.page-body__container').forEach((item) => {
         item.classList.remove('page-body__container--no-after');
       });
@@ -72,18 +70,16 @@ const handleSiteMenuClick = (menuItem) => {
         return;
       }
 
-      filterPresenter.filtersModeChange(menuItem);
-
       statisticsButton.classList.add('trip-tabs__btn--active');
       tableButton.classList.remove('trip-tabs__btn--active');
 
-      addButton.disabled = true;
       document.querySelectorAll('.page-body__container').forEach((item) => {
         item.classList.add('page-body__container--no-after');
       });
 
       boardPresenter.destroy();
-      statisticsComponent = new StatisticsView(eventsModel.getEvents());
+      statisticsComponent = new StatisticsView(eventsModel.get());
+      disableAddButton();
       render(tripEventsSection, statisticsComponent, RenderPosition.BEFOREEND);
       break;
   }
@@ -91,21 +87,22 @@ const handleSiteMenuClick = (menuItem) => {
 
 Promise.all([apiWithProvider.getEvents(), apiWithProvider.getDestinations(), apiWithProvider.getOffers()])
   .then(([events, destinations, offers]) => {
-    offersData.setOffers(offers);
-    destinationData.setDestination(destinations);
-    eventsModel.setEvents(UpdateType.INIT, events);
+    offersData.set(offers);
+    destinationData.set(destinations);
+    eventsModel.set(UpdateType.INIT, events);
     renderNavControls();
-    addButton.disabled = false;
+    enableAddButton();
     filterPresenter.init();
     routeInfoPresenter.init();
-    siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
-  })
-  .catch(() => {
-    destinationData.setDestination([]);
-    eventsModel.setEvents(UpdateType.INIT, []);
-    renderNavControls();
-    siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
+    siteMenuComponent.setClickHandler(handleSiteMenuClick);
   });
+// .catch(() => {
+//   offersData.set([]);
+//   destinationData.set([]);
+//   eventsModel.set(UpdateType.INIT, []);
+//   renderNavControls();
+//   siteMenuComponent.setClickHandler(handleSiteMenuClick);
+// });
 
 boardPresenter.init();
 
@@ -116,7 +113,7 @@ addButton.addEventListener('click', (evt) => {
     return;
   }
   boardPresenter.createEvent();
-  // addButton.disabled = true;
+  disableAddButton();
 });
 
 window.addEventListener('load', () => {
@@ -124,13 +121,13 @@ window.addEventListener('load', () => {
 });
 
 window.addEventListener('online', () => {
-  document.title = document.title.replace(offlineTitle, '');
+  document.title = document.title.replace(OFFLINE_TITLE, '');
   apiWithProvider.sync();
 });
 
 window.addEventListener('offline', () => {
   toast(OfflineMessage.DISCONNECT);
-  document.title += offlineTitle;
+  document.title += OFFLINE_TITLE;
 });
 
 

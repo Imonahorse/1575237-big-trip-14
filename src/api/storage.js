@@ -1,4 +1,4 @@
-class Storage {
+export default class Storage {
   constructor(key, storage) {
     this._storage = storage;
     this._storeKey = key;
@@ -30,5 +30,3 @@ class Storage {
     this._storage.setItem(this._storeKey, JSON.stringify(store));
   }
 }
-
-export default Storage;

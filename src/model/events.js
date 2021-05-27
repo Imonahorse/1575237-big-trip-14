@@ -1,22 +1,22 @@
 import Observer from './observer.js';
 
-class Events extends Observer {
+export default class Events extends Observer {
   constructor() {
     super();
     this._events = [];
   }
 
-  setEvents(updateType, events) {
+  set(updateType, events) {
     this._events = events.slice();
 
     this._notify(updateType);
   }
 
-  getEvents() {
-    return this._events;
+  get() {
+    return this._events.slice(0,2);
   }
 
-  updateEvent(updateType, update) {
+  update(updateType, update) {
     const index = this._events.findIndex((event) => event.id === update.id);
 
     if (index === -1) {
@@ -32,7 +32,7 @@ class Events extends Observer {
     this._notify(updateType, update);
   }
 
-  addEvent(updateType, update) {
+  add(updateType, update) {
     this._events = [
       update,
       ...this._events,
@@ -41,7 +41,7 @@ class Events extends Observer {
     this._notify(updateType, update);
   }
 
-  deleteEvent(updateType, update) {
+  delete(updateType, update) {
     const index = this._events.findIndex((event) => event.id === update.id);
 
     if (index === -1) {
@@ -96,5 +96,3 @@ class Events extends Observer {
     return adaptedEvent;
   }
 }
-
-export default Events;

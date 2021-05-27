@@ -8,26 +8,24 @@ const createSiteMenuTemplate = () => {
           </nav>`;
 };
 
-class SiteMenu extends AbstractView {
+export default class SiteMenu extends AbstractView {
   constructor() {
     super();
 
-    this._menuClickHandler = this._menuClickHandler.bind(this);
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   getTemplate() {
     return createSiteMenuTemplate();
   }
 
-  _menuClickHandler(evt) {
+  _clickHandler(evt) {
     evt.preventDefault();
     this._callback.menuClick(evt.target.dataset.menuType);
   }
 
-  setMenuClickHandler(callback) {
+  setClickHandler(callback) {
     this._callback.menuClick = callback;
-    this.getElement().addEventListener('click', this._menuClickHandler);
+    this.getElement().addEventListener('click', this._clickHandler);
   }
 }
-
-export default SiteMenu;

@@ -33,6 +33,33 @@ const CACHE_CONTENT = [
   '/img/header-bg@2x.png',
   '/img/logo.png',
 ];
+const interceptEventHandler = (evt) => {
+  const {request} = evt;
+
+  evt.respondWith(
+    caches.match(request)
+      .then((cacheResponse) => {
+        if (cacheResponse) {
+          return cacheResponse;
+        }
+
+        return fetch(request)
+          .then((response) => {
+            if (!response || response.status !== HTTP_STATUS_OK || response.type !== RESPONSE_SAFE_TYPE) {
+              return response;
+            }
+
+            const clonedResponse = response.clone();
+
+            caches.open(CACHE_NAME)
+              .then((cache) => cache.put(request, clonedResponse));
+
+            return response;
+          });
+      }),
+  );
+};
+
 
 self.addEventListener('install', (evt) => {
   evt.waitUntil(caches.open(CACHE_NAME)
@@ -60,31 +87,4 @@ self.addEventListener('activate', (evt) => {
   );
 });
 
-const handleFetch = (evt) => {
-  const {request} = evt;
-
-  evt.respondWith(
-    caches.match(request)
-      .then((cacheResponse) => {
-        if (cacheResponse) {
-          return cacheResponse;
-        }
-
-        return fetch(request)
-          .then((response) => {
-            if (!response || response.status !== HTTP_STATUS_OK || response.type !== RESPONSE_SAFE_TYPE) {
-              return response;
-            }
-
-            const clonedResponse = response.clone();
-
-            caches.open(CACHE_NAME)
-              .then((cache) => cache.put(request, clonedResponse));
-
-            return response;
-          });
-      }),
-  );
-};
-
-self.addEventListener('fetch', handleFetch);
+self.addEventListener('fetch', interceptEventHandler);

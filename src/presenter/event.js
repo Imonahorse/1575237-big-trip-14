@@ -3,17 +3,17 @@ import EventView from '../view/event.js';
 import {isDatesEqual, isPriceEqual} from '../utils/event.js';
 import {render, replace, remove} from '../utils/render.js';
 import {isEscEvent, isOnline} from '../utils/common.js';
-import {UserAction, UpdateType, Mode, RenderPosition, State, OfflineMessage} from '../utils/constant.js';
+import {UserAction, UpdateType, RenderPosition, State, OfflineMessage, Mode, State as TaskPresenterViewState} from '../utils/constant.js';
 import {toast} from '../utils/toast.js';
 
-class Event {
+export default class Event {
   constructor(eventListComponent, changeData, changeMode) {
     this._eventListComponent = eventListComponent;
     this._eventComponent = null;
     this._eventEditComponent = null;
-    this._mode = Mode.DEFAULT;
     this._changeData = changeData;
     this._changeMode = changeMode;
+    this._mode = Mode.DEFAULT;
 
     this._handleEditClick = this._handleEditClick.bind(this);
     this._handleCloseEditClick = this._handleCloseEditClick.bind(this);
@@ -106,7 +106,7 @@ class Event {
 
   _replaceFormToCard() {
     this._mode = Mode.DEFAULT;
-
+    this._eventEditComponent.reset(this._event);
     replace(this._eventComponent, this._eventEditComponent);
   }
 
@@ -126,6 +126,7 @@ class Event {
   _handleEditClick() {
     if (!isOnline()) {
       toast(OfflineMessage.EDIT_EVENT);
+      this.setViewState(State.ABORTING);
       return;
     }
 
@@ -141,6 +142,7 @@ class Event {
   _handleSubmitEditClick(event) {
     if (!isOnline()) {
       toast(OfflineMessage.SAVE_EVENT);
+      this.setViewState(State.ABORTING);
       return;
     }
 
@@ -164,6 +166,7 @@ class Event {
   _handleDeleteEditClick(event) {
     if (!isOnline()) {
       toast(OfflineMessage.DELETE_EVENT);
+      this.setViewState(State.ABORTING);
       return;
     }
 
@@ -174,6 +177,3 @@ class Event {
     );
   }
 }
-
-export default Event;
-

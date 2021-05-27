@@ -1,6 +1,7 @@
 import {humanizeDateFormat, humanizeTimeFormat} from '../utils/event.js';
 import AbstractView from './abstract.js';
 import {msToTime} from '../utils/common.js';
+import he from 'he';
 
 const createOffersTemplate = (offers) => {
   if (offers === null) {
@@ -31,21 +32,21 @@ const createEventTemplate = (event) => {
 
   return `<li class="trip-events__item" id="${id}">
               <div class="event">
-                <time class="event__date" datetime="2019-03-18">${date}</time>
+                <time class="event__date" datetime="2019-03-18">${he.encode(date)}</time>
                 <div class="event__type">
                   <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
                 </div>
                 <h3 class="event__title">${type} ${name}</h3>
                 <div class="event__schedule">
                   <p class="event__time">
-                    <time class="event__start-time" datetime="${timeStart}">${timeStart}</time>
+                    <time class="event__start-time" datetime="${he.encode(timeStart)}">${he.encode(timeStart)}</time>
                     &mdash;
-                    <time class="event__end-time" datetime="${timeEnd}">${timeEnd}</time>
+                    <time class="event__end-time" datetime="${he.encode(timeEnd)}">${he.encode(timeEnd)}</time>
                   </p>
                   <p class="event__duration">${duration}</p>
                 </div>
                 <p class="event__price">
-                  &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
+                  &euro;&nbsp;<span class="event__price-value">${he.encode(basePrice.toString())}</span>
                 </p>
                 <h4 class="visually-hidden">Offers:</h4>
                 <ul class="event__selected-offers">
@@ -65,7 +66,7 @@ const createEventTemplate = (event) => {
             </li>`;
 };
 
-class Event extends AbstractView {
+export default class Event extends AbstractView {
   constructor(events) {
     super();
     this._events = events;
@@ -97,5 +98,3 @@ class Event extends AbstractView {
     this.getElement().querySelector('.event__favorite-btn').addEventListener('click', this._favoriteClickHandler);
   }
 }
-
-export default Event;

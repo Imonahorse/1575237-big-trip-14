@@ -1,16 +1,18 @@
-import SortingView from '../view/sorting-events.js';
+import SortingView from '../view/sorting.js';
 import EventsListView from '../view/events-list.js';
 import NoEventView from '../view/no-event.js';
 import {render, remove} from '../utils/render.js';
 import EventPresenter from './event.js';
-import {FilterType, UpdateType, UserAction, SortType, RenderPosition, State as TaskPresenterViewState} from '../utils/constant.js';
+import {FilterType, UpdateType, UserAction, SortType, RenderPosition, State as TaskPresenterViewState, OfflineMessage, OFFLINE_TITLE} from '../utils/constant.js';
 import {filter} from '../utils/filter.js';
 import EventNewPresenter from './new-event.js';
 import LoadingView from '../view/loading.js';
+import {toast} from '../utils/toast.js';
+import {isOnline} from '../utils/common.js';
 
 const EMPTY_EVENTS_LIST = 0;
 
-class Board {
+export default class Board {
   constructor(boardContainer, eventsModel, filterModel, api) {
     this._eventPresenter = {};
     this._currentSortType = SortType.DAY;
@@ -38,6 +40,11 @@ class Board {
     this._filterModel.addObserver(this._handleModelEvent);
 
     this._renderBoard();
+
+    if (!isOnline()) {
+      toast(OfflineMessage.DISCONNECT);
+      document.title += OFFLINE_TITLE;
+    }
   }
 
   destroy() {
@@ -50,13 +57,13 @@ class Board {
   }
 
   _getEvents() {
-    const filterType = this._filterModel.getFilter();
-    const events = this._eventsModel.getEvents();
+    const filterType = this._filterModel.get();
+    const events = this._eventsModel.get();
     const filteredEvents = filter[filterType](events);
 
     switch (this._currentSortType) {
       case SortType.DAY:
-        return filteredEvents.slice().sort((a, b) => b.dateTo - a.dateTo);
+        return filteredEvents.slice().sort((a, b) => a.dateTo - b.dateTo);
       case SortType.TIME:
         return filteredEvents.slice().sort((a, b) => (b.dateTo - b.dateFrom) - (a.dateTo - a.dateFrom));
       case SortType.PRICE:
@@ -68,7 +75,7 @@ class Board {
 
   createEvent() {
     this._currentSortType = SortType.DAY;
-    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this._filterModel.set(UpdateType.MAJOR, FilterType.EVERYTHING);
     this._eventNewPresenter.init();
   }
 
@@ -87,10 +94,9 @@ class Board {
       this._sortComponent = null;
     }
 
-    document.querySelector('.trip-main__event-add-btn').disabled = false;
     this._sortComponent = new SortingView(this._currentSortType);
     render(this._boardContainer, this._sortComponent, RenderPosition.AFTERBEGIN);
-    this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
+    this._sortComponent.setTypeChangeHandler(this._handleSortTypeChange);
   }
 
   _handleModeChange() {
@@ -106,19 +112,19 @@ class Board {
       case UserAction.UPDATE_EVENT:
         this._eventPresenter[update.id].setViewState(TaskPresenterViewState.SAVING);
         this._api.updateEvent(update)
-          .then((response) => this._eventsModel.updateEvent(updateType, response))
+          .then((response) => this._eventsModel.update(updateType, response))
           .catch(() => this._eventPresenter[update.id].setViewState(TaskPresenterViewState.ABORTING));
         break;
       case UserAction.ADD_EVENT:
         this._eventNewPresenter.setSaving();
         this._api.addEvent(update)
-          .then((response) => this._eventsModel.addEvent(updateType, response))
+          .then((response) => this._eventsModel.add(updateType, response))
           .catch(() => this._eventNewPresenter.setAborting());
         break;
       case UserAction.DELETE_EVENT:
         this._eventPresenter[update.id].setViewState(TaskPresenterViewState.DELETING);
         this._api.deleteEvent(update)
-          .then(() => this._eventsModel.deleteEvent(updateType, update))
+          .then(() => this._eventsModel.delete(updateType, update))
           .catch(() => this._eventPresenter[update.id].setViewState(TaskPresenterViewState.ABORTING));
         break;
     }
@@ -200,5 +206,3 @@ class Board {
     this._renderEvents();
   }
 }
-
-export default Board;
