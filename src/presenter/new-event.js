@@ -5,7 +5,7 @@ import {isEscEvent} from '../utils/common.js';
 import {disableAddButton, enableAddButton} from '../utils/add-button.js';
 
 
-export default class newEvent {
+export default class NewEvent {
   constructor(eventListContainer, changeData) {
     this._eventListContainer = eventListContainer;
     this._changeData = changeData;

@@ -57,7 +57,7 @@ const createOffersList = (type, offers, offersList, isDisabled) => {
 };
 const createOffersTemplate = (type, offers, idDisabled) => {
   if (!offersData.get().length || !offersData.get()) {
-    return `<section class="event__section  event__section--offers visually-hidden">
+    return `<section class="event__section  event__section--offers block">
 </section>`;
   }
 
