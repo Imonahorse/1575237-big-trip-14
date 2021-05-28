@@ -2,6 +2,9 @@ import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {msToTime} from './common.js';
 
+const BAR_HEIGHT = 55;
+const DEFAULT_HEIGHT = 3;
+
 const makeItemsUnique = (items) => [...new Set(items)];
 const countEventsByType = (events, type) => {
   return events.filter((event) => event.type === type).length;
@@ -24,6 +27,7 @@ const renderTypesChart = (typeCtx, events) => {
   const uniqueTypes = makeItemsUnique(types);
   const eventsByTypeCounts = uniqueTypes.map((item) => countEventsByType(events, item));
   const uniqueTypesUpperCase = uniqueTypes.map((item) => item.toUpperCase());
+  typeCtx.height = uniqueTypesUpperCase.length ? BAR_HEIGHT * uniqueTypesUpperCase.length : BAR_HEIGHT * DEFAULT_HEIGHT;
 
   const typeChart = new Chart(typeCtx, {
     plugins: [ChartDataLabels],
@@ -96,6 +100,7 @@ const renderMoneysChart = (moneyCtx, events) => {
   const uniqueTypes = makeItemsUnique(types);
   const eventsByPriceCounts = uniqueTypes.map((item) => countPriceByType(events, item));
   const uniqueTypesUpperCase = uniqueTypes.map((item) => item.toUpperCase());
+  moneyCtx.height = uniqueTypesUpperCase.length ? BAR_HEIGHT * uniqueTypesUpperCase.length : BAR_HEIGHT * DEFAULT_HEIGHT;
 
   const moneyChart = new Chart(moneyCtx, {
     plugins: [ChartDataLabels],
@@ -169,6 +174,7 @@ const renderDurationChart = (timeCtx, events) => {
   const uniqueTypes = makeItemsUnique(types);
   const eventsByDurationCounts = uniqueTypes.map((item) => countDurationByType(events, item));
   const uniqueTypesUpperCase = uniqueTypes.map((item) => item.toUpperCase());
+  timeCtx.height = uniqueTypesUpperCase.length ? BAR_HEIGHT * uniqueTypesUpperCase.length : BAR_HEIGHT * DEFAULT_HEIGHT;
 
   const timeChart = new Chart(timeCtx, {
     plugins: [ChartDataLabels],

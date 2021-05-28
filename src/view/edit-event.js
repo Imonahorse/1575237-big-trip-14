@@ -184,33 +184,36 @@ export default class EditEvent extends SmartView {
     return createEditEventTemplate(this._data);
   }
 
+  removeElement() {
+    super.removeElement();
+
+    if (this._dateToPicker || this._dateFromPicker) {
+      this._dateToPicker.destroy();
+      this._dateToPicker = null;
+      this._dateFromPicker.destroy();
+      this._dateFromPicker = null;
+    }
+  }
+
   reset(event) {
     this.updateData(
       EditEvent.changeEventToState(event),
     );
   }
 
-  static changeEventToState(event) {
-    if (!event) {
-      return event;
-    }
-
-    return Object.assign({}, event, {
-      prevTypeState: event.type,
-      isDisabled: false,
-      isSaving: false,
-      isDeleting: false,
-    });
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setEditClickHandler(this._callback.editClick);
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setDeleteClickHandler(this._callback.deleteClick);
+    this._setDatepickerDateTo();
+    this._setDatepickerDateFrom();
   }
 
-  static changeStateToEvent(data) {
-    const newData = Object.assign({}, data);
-    delete newData.prevTypeState;
-    delete newData.isDisabled;
-    delete newData.isSaving;
-    delete newData.isDeleting;
-
-    return newData;
+  focusOnInput() {
+    if(!this._data.id) {
+      this.getElement().querySelector('.event__input--destination').focus();
+    }
   }
 
   _dateToChangeHandler([userDate]) {
@@ -264,26 +267,6 @@ export default class EditEvent extends SmartView {
           onClose: this._dateFromChangeHandler,
         },
       );
-    }
-  }
-
-  restoreHandlers() {
-    this._setInnerHandlers();
-    this.setEditClickHandler(this._callback.editClick);
-    this.setFormSubmitHandler(this._callback.formSubmit);
-    this.setDeleteClickHandler(this._callback.deleteClick);
-    this._setDatepickerDateTo();
-    this._setDatepickerDateFrom();
-  }
-
-  removeElement() {
-    super.removeElement();
-
-    if (this._dateToPicker || this._dateFromPicker) {
-      this._dateToPicker.destroy();
-      this._dateToPicker = null;
-      this._dateFromPicker.destroy();
-      this._dateFromPicker = null;
     }
   }
 
@@ -398,5 +381,28 @@ export default class EditEvent extends SmartView {
   setEditClickHandler(callback) {
     this._callback.editClick = callback;
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._editClickHandler);
+  }
+
+  static changeEventToState(event) {
+    if (!event) {
+      return event;
+    }
+
+    return Object.assign({}, event, {
+      prevTypeState: event.type,
+      isDisabled: false,
+      isSaving: false,
+      isDeleting: false,
+    });
+  }
+
+  static changeStateToEvent(data) {
+    const newData = Object.assign({}, data);
+    delete newData.prevTypeState;
+    delete newData.isDisabled;
+    delete newData.isSaving;
+    delete newData.isDeleting;
+
+    return newData;
   }
 }

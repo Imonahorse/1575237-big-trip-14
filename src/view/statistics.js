@@ -1,8 +1,6 @@
 import SmartView from './smart.js';
 import {renderTypesChart, renderMoneysChart, renderDurationChart} from '../utils/statistics';
 
-const BAR_HEIGHT = 55;
-
 const createStatisticsTemplate = () => {
   return `<section class="statistics">
           <h2 class="visually-hidden">Trip statistics</h2>
@@ -32,6 +30,10 @@ export default class Statistics extends SmartView {
     this._setCharts();
   }
 
+  getTemplate() {
+    return createStatisticsTemplate();
+  }
+
   removeElement() {
     super.removeElement();
 
@@ -40,10 +42,6 @@ export default class Statistics extends SmartView {
       this._moneysChart = null;
       this._durationChart = null;
     }
-  }
-
-  getTemplate() {
-    return createStatisticsTemplate();
   }
 
   _setCharts() {
@@ -55,10 +53,6 @@ export default class Statistics extends SmartView {
     const moneyCtx = this.getElement().querySelector('.statistics__chart--money');
     const typeCtx = this.getElement().querySelector('.statistics__chart--transport');
     const timeCtx = this.getElement().querySelector('.statistics__chart--time');
-
-    moneyCtx.height = BAR_HEIGHT * 7.5;
-    typeCtx.height = BAR_HEIGHT * 7.5;
-    timeCtx.height = BAR_HEIGHT * 7.5;
 
     this._typesChart = renderTypesChart(typeCtx, this._data);
     this._moneysChart = renderMoneysChart(moneyCtx, this._data);

@@ -3,7 +3,16 @@ import EventsListView from '../view/events-list.js';
 import NoEventView from '../view/no-event.js';
 import {render, remove} from '../utils/render.js';
 import EventPresenter from './event.js';
-import {FilterType, UpdateType, UserAction, SortType, RenderPosition, State as TaskPresenterViewState, OfflineMessage, OFFLINE_TITLE} from '../utils/constant.js';
+import {
+  FilterType,
+  UpdateType,
+  UserAction,
+  SortType,
+  RenderPosition,
+  State as TaskPresenterViewState,
+  OfflineMessage,
+  OFFLINE_TITLE
+} from '../utils/constant.js';
 import {filter} from '../utils/filter.js';
 import EventNewPresenter from './new-event.js';
 import LoadingView from '../view/loading.js';
@@ -56,6 +65,12 @@ export default class Board {
     this._filterModel.removeObserver(this._handleModelEvent);
   }
 
+  createEvent() {
+    this._currentSortType = SortType.DAY;
+    this._filterModel.set(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this._eventNewPresenter.init();
+  }
+
   _getEvents() {
     const filterType = this._filterModel.get();
     const events = this._eventsModel.get();
@@ -71,12 +86,6 @@ export default class Board {
     }
 
     return filteredEvents;
-  }
-
-  createEvent() {
-    this._currentSortType = SortType.DAY;
-    this._filterModel.set(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this._eventNewPresenter.init();
   }
 
   _handleSortTypeChange(sortType) {

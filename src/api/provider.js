@@ -2,7 +2,7 @@ import EventsModel from '../model/events.js';
 import {isOnline} from '../utils/common.js';
 
 const getSyncedEvents = (items) => {
-  return items.filter(({success}) => success).map(({payload}) => payload.event);
+  return items.filter(({success}) => success).map(({payload}) => payload.point);
 };
 
 const createStoreStructure = (items) => {

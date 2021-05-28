@@ -38,6 +38,10 @@ export default class Filter extends AbstractView {
     return createFilterTemplate(this._filter, this._currentFilterType);
   }
 
+  getInputs() {
+    return this.getElement().querySelectorAll('input');
+  }
+
   _typeChangeHandler(evt) {
     evt.preventDefault();
     this._callback.filterTypeChange(evt.target.value);

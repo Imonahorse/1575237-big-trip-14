@@ -31,7 +31,7 @@ export default class newEvent {
     disableAddButton();
 
     document.addEventListener('keydown', this._escKeyDownHandler);
-    this._eventEditComponent.getElement().querySelector('.event__input--destination').focus();
+    this._eventEditComponent.focusOnInput();
   }
 
   destroy() {

@@ -3,7 +3,7 @@ import EventView from '../view/event.js';
 import {isDatesEqual, isPriceEqual} from '../utils/event.js';
 import {render, replace, remove} from '../utils/render.js';
 import {isEscEvent, isOnline} from '../utils/common.js';
-import {UserAction, UpdateType, RenderPosition, State, OfflineMessage, Mode, State as TaskPresenterViewState} from '../utils/constant.js';
+import {UserAction, UpdateType, RenderPosition, State, OfflineMessage, Mode} from '../utils/constant.js';
 import {toast} from '../utils/toast.js';
 
 export default class Event {

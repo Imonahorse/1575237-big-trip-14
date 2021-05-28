@@ -26,10 +26,11 @@ const getDestinationName = (events) => {
 };
 const getDate = (events) => {
   const firstDate = humanizeDateFormat(events[0].dateFrom);
+  const secondDate = humanizeDateFormat(events[0].dateTo);
   const lastDate = humanizeDateFormat(events[events.length - 1].dateTo);
 
   if (events.length === 1) {
-    return firstDate;
+    return firstDate + ' &nbsp;&mdash;&nbsp; ' + secondDate;
   }
   if (events.length >= 2) {
     return firstDate + ' &nbsp;&mdash;&nbsp; ' + lastDate;

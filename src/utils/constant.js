@@ -38,6 +38,7 @@ const OfflineMessage = {
   SAVE_EVENT: 'You can\'t save task offline',
   DELETE_EVENT: 'You can\'t delete task offline',
   EDIT_EVENT: 'You can\'t edit task offline',
+  RECONNECT: 'Connection restored',
 };
 const Mode = {
   DEFAULT: 'DEFAULT',
