@@ -184,6 +184,21 @@ export default class EditEvent extends SmartView {
     return createEditEventTemplate(this._data);
   }
 
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._formDeleteClickHandler);
+  }
+
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
+  }
+
+  setEditClickHandler(callback) {
+    this._callback.editClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._editClickHandler);
+  }
+
   removeElement() {
     super.removeElement();
 
@@ -214,19 +229,6 @@ export default class EditEvent extends SmartView {
     if(!this._data.id) {
       this.getElement().querySelector('.event__input--destination').focus();
     }
-  }
-
-  _dateToChangeHandler([userDate]) {
-    this.updateData({
-      dateTo: userDate,
-    }, true);
-  }
-
-  _dateFromChangeHandler([userDate]) {
-    this.updateData({
-      dateFrom: userDate,
-      dateTo: this._data.dateTo < userDate ? userDate : this._data.dateTo,
-    });
   }
 
   _setDatepickerDateTo() {
@@ -277,6 +279,19 @@ export default class EditEvent extends SmartView {
     this.getElement().querySelector('.event__section--offers').addEventListener('click', this._offerCheckHandler);
   }
 
+  _dateToChangeHandler([userDate]) {
+    this.updateData({
+      dateTo: userDate,
+    }, true);
+  }
+
+  _dateFromChangeHandler([userDate]) {
+    this.updateData({
+      dateFrom: userDate,
+      dateTo: this._data.dateTo < userDate ? userDate : this._data.dateTo,
+    });
+  }
+
   _typeToggleHandler(evt) {
     evt.preventDefault();
     const activeType = evt.target.value;
@@ -319,7 +334,7 @@ export default class EditEvent extends SmartView {
     }
 
     let checkedOffers;
-    this._data.offers ? checkedOffers = this._data.offers.slice() : checkedOffers = [];
+    checkedOffers = this._data.offers ? this._data.offers.slice() : [];
 
     if (offer.checked) {
       const map = offersData.get().find((item) => item.type === this._data.type);
@@ -366,21 +381,6 @@ export default class EditEvent extends SmartView {
   _formDeleteClickHandler(evt) {
     evt.preventDefault();
     this._callback.deleteClick(EditEvent.changeStateToEvent(this._data));
-  }
-
-  setDeleteClickHandler(callback) {
-    this._callback.deleteClick = callback;
-    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._formDeleteClickHandler);
-  }
-
-  setFormSubmitHandler(callback) {
-    this._callback.formSubmit = callback;
-    this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
-  }
-
-  setEditClickHandler(callback) {
-    this._callback.editClick = callback;
-    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._editClickHandler);
   }
 
   static changeEventToState(event) {

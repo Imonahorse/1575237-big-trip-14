@@ -44,6 +44,11 @@ export default class Sorting extends AbstractView {
     return createSortingEventsTemplate(this._currentSortType);
   }
 
+  setTypeChangeHandler(callback) {
+    this._callback.sortTypeChange = callback;
+    this.getElement().addEventListener('click', this._typeChangeHandler);
+  }
+
   _typeChangeHandler(evt) {
     if (evt.target.tagName !== 'INPUT') {
       return;
@@ -51,10 +56,5 @@ export default class Sorting extends AbstractView {
 
     evt.preventDefault();
     this._callback.sortTypeChange(evt.target.dataset.sortType);
-  }
-
-  setTypeChangeHandler(callback) {
-    this._callback.sortTypeChange = callback;
-    this.getElement().addEventListener('click', this._typeChangeHandler);
   }
 }

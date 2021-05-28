@@ -31,6 +31,11 @@ export default class SiteMenu extends AbstractView {
     });
   }
 
+  setClickHandler(callback) {
+    this._callback.menuClick = callback;
+    this.getElement().addEventListener('click', this._clickHandler);
+  }
+
   _clickHandler(evt) {
     if (evt.target.classList.contains('trip-tabs__btn--active')) {
       return;
@@ -38,10 +43,5 @@ export default class SiteMenu extends AbstractView {
 
     evt.preventDefault();
     this._callback.menuClick(evt.target.dataset.type);
-  }
-
-  setClickHandler(callback) {
-    this._callback.menuClick = callback;
-    this.getElement().addEventListener('click', this._clickHandler);
   }
 }

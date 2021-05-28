@@ -32,20 +32,6 @@ export default class Provider {
     return Promise.resolve(storeEvents.map(EventsModel.adaptToClient));
   }
 
-  updateEvent(event) {
-    if (isOnline()) {
-      return this._api.updateEvent(event)
-        .then((updatedEvent) => {
-          this._store.setItem(updatedEvent.id, EventsModel.adaptToServer(updatedEvent));
-          return updatedEvent;
-        });
-    }
-
-    this._store.setItem(event.id, EventsModel.adaptToServer(Object.assign({}, event)));
-
-    return Promise.resolve(event);
-  }
-
   getOffers() {
     if (isOnline()) {
       return this._api.getOffers();
@@ -62,6 +48,19 @@ export default class Provider {
     return Promise.resolve([]);
   }
 
+  updateEvent(event) {
+    if (isOnline()) {
+      return this._api.updateEvent(event)
+        .then((updatedEvent) => {
+          this._store.setItem(updatedEvent.id, EventsModel.adaptToServer(updatedEvent));
+          return updatedEvent;
+        });
+    }
+
+    this._store.setItem(event.id, EventsModel.adaptToServer(Object.assign({}, event)));
+
+    return Promise.resolve(event);
+  }
 
   addEvent(event) {
     if (isOnline()) {

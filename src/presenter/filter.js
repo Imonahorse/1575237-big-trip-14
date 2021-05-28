@@ -18,6 +18,28 @@ export default class Filter {
     this._filterModel.addObserver(this._handleModelEvent);
   }
 
+  _getFilters() {
+    const events = this._eventsModel.get();
+
+    return [
+      {
+        type: FilterType.EVERYTHING,
+        name: 'everything',
+        count: filter[FilterType.EVERYTHING](events).length,
+      },
+      {
+        type: FilterType.FUTURE,
+        name: 'future',
+        count: filter[FilterType.FUTURE](events).length,
+      },
+      {
+        type: FilterType.PAST,
+        name: 'past',
+        count: filter[FilterType.PAST](events).length,
+      },
+    ];
+  }
+
   init() {
     const filters = this._getFilters();
     const prevFilterComponent = this._filterComponent;
@@ -63,27 +85,5 @@ export default class Filter {
     }
 
     this._filterModel.set(UpdateType.MAJOR, filterType);
-  }
-
-  _getFilters() {
-    const events = this._eventsModel.get();
-
-    return [
-      {
-        type: FilterType.EVERYTHING,
-        name: 'everything',
-        count: filter[FilterType.EVERYTHING](events).length,
-      },
-      {
-        type: FilterType.FUTURE,
-        name: 'future',
-        count: filter[FilterType.FUTURE](events).length,
-      },
-      {
-        type: FilterType.PAST,
-        name: 'past',
-        count: filter[FilterType.PAST](events).length,
-      },
-    ];
   }
 }

@@ -44,6 +44,23 @@ export default class Board {
     this._eventNewPresenter = new EventNewPresenter(this._eventsListComponent, this._handleViewAction);
   }
 
+  _getEvents() {
+    const filterType = this._filterModel.get();
+    const events = this._eventsModel.get();
+    const filteredEvents = filter[filterType](events);
+
+    switch (this._currentSortType) {
+      case SortType.DAY:
+        return filteredEvents.slice().sort((a, b) => a.dateTo - b.dateTo);
+      case SortType.TIME:
+        return filteredEvents.slice().sort((a, b) => (b.dateTo - b.dateFrom) - (a.dateTo - a.dateFrom));
+      case SortType.PRICE:
+        return filteredEvents.slice().sort((a, b) => b.basePrice - a.basePrice);
+    }
+
+    return filteredEvents;
+  }
+
   init() {
     this._eventsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
@@ -69,33 +86,6 @@ export default class Board {
     this._currentSortType = SortType.DAY;
     this._filterModel.set(UpdateType.MAJOR, FilterType.EVERYTHING);
     this._eventNewPresenter.init();
-  }
-
-  _getEvents() {
-    const filterType = this._filterModel.get();
-    const events = this._eventsModel.get();
-    const filteredEvents = filter[filterType](events);
-
-    switch (this._currentSortType) {
-      case SortType.DAY:
-        return filteredEvents.slice().sort((a, b) => a.dateTo - b.dateTo);
-      case SortType.TIME:
-        return filteredEvents.slice().sort((a, b) => (b.dateTo - b.dateFrom) - (a.dateTo - a.dateFrom));
-      case SortType.PRICE:
-        return filteredEvents.slice().sort((a, b) => b.basePrice - a.basePrice);
-    }
-
-    return filteredEvents;
-  }
-
-  _handleSortTypeChange(sortType) {
-    if (this._currentSortType === sortType) {
-      return;
-    }
-
-    this._currentSortType = sortType;
-    this._clearBoard();
-    this._renderBoard();
   }
 
   _renderSorting() {
@@ -213,5 +203,15 @@ export default class Board {
     this._renderEventsList();
     this._renderSorting();
     this._renderEvents();
+  }
+
+  _handleSortTypeChange(sortType) {
+    if (this._currentSortType === sortType) {
+      return;
+    }
+
+    this._currentSortType = sortType;
+    this._clearBoard();
+    this._renderBoard();
   }
 }

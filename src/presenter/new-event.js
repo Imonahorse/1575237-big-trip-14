@@ -17,6 +17,25 @@ export default class NewEvent {
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
 
+  setSaving() {
+    this._eventEditComponent.updateData({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this._eventEditComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this._eventEditComponent.shake(resetFormState);
+  }
+
   init() {
     if (this._eventEditComponent !== null) {
       return;
@@ -44,25 +63,6 @@ export default class NewEvent {
 
     document.removeEventListener('keydown', this._escKeyDownHandler);
     enableAddButton();
-  }
-
-  setSaving() {
-    this._eventEditComponent.updateData({
-      isDisabled: true,
-      isSaving: true,
-    });
-  }
-
-  setAborting() {
-    const resetFormState = () => {
-      this._eventEditComponent.updateData({
-        isDisabled: false,
-        isSaving: false,
-        isDeleting: false,
-      });
-    };
-
-    this._eventEditComponent.shake(resetFormState);
   }
 
   _handleFormSubmit(event) {

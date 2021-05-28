@@ -13,6 +13,10 @@ export default class RouteInfo {
     this._eventsModel.addObserver(this._handleModelEvent);
   }
 
+  _getRouteInfo() {
+    return this._eventsModel.get();
+  }
+
   init() {
     const events = this._getRouteInfo();
 
@@ -37,9 +41,5 @@ export default class RouteInfo {
 
   _handleModelEvent() {
     this.init();
-  }
-
-  _getRouteInfo() {
-    return this._eventsModel.get();
   }
 }

@@ -23,6 +23,35 @@ export default class Event {
     this._handleDeleteEditClick = this._handleDeleteEditClick.bind(this);
   }
 
+  setViewState(state) {
+    const resetFormState = () => {
+      this._eventEditComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    switch (state) {
+      case State.SAVING:
+        this._eventEditComponent.updateData({
+          isDisabled: true,
+          isSaving: true,
+        });
+        break;
+      case State.DELETING:
+        this._eventEditComponent.updateData({
+          isDisabled: true,
+          isDeleting: true,
+        });
+        break;
+      case State.ABORTING:
+        this._eventComponent.shake(resetFormState);
+        this._eventEditComponent.shake(resetFormState);
+        break;
+    }
+  }
+
   init(event) {
     this._event = event;
 
@@ -65,35 +94,6 @@ export default class Event {
   resetView() {
     if (this._mode !== Mode.DEFAULT) {
       this._replaceFormToCard();
-    }
-  }
-
-  setViewState(state) {
-    const resetFormState = () => {
-      this._eventEditComponent.updateData({
-        isDisabled: false,
-        isSaving: false,
-        isDeleting: false,
-      });
-    };
-
-    switch (state) {
-      case State.SAVING:
-        this._eventEditComponent.updateData({
-          isDisabled: true,
-          isSaving: true,
-        });
-        break;
-      case State.DELETING:
-        this._eventEditComponent.updateData({
-          isDisabled: true,
-          isDeleting: true,
-        });
-        break;
-      case State.ABORTING:
-        this._eventComponent.shake(resetFormState);
-        this._eventEditComponent.shake(resetFormState);
-        break;
     }
   }
 
